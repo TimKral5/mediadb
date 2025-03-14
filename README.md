@@ -44,6 +44,16 @@ application.
 The configuration can be applied with
 `kubectl apply -f deployment.yaml`.
 
+## API Structure
+
+This image shows the general structure of the application with its
+classes:
+
+![mdb-classes.png](./docs/img/mdb-classes.png)
+
+> **Note:** The database structure is not yet implemented like this.
+> This is, however, the aim of this project.
+
 ## Database Structure
 
 The following illustration shows the data structures from within the
@@ -53,3 +63,7 @@ MongoDB database:
 
 > **Note:** The database structure is not yet implemented like this.
 > This is, however, the aim of this project.
+
+## System Design
+
+![mdb-system_designs.png](./docs/img/mdb-system_designs.png)
