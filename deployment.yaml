@@ -1,0 +1,270 @@
+
+#
+# Config Files
+#
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+data:
+  prometheus_yaml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: 'mdb_metrics'
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'mdb:3000' ]
+  loki_yaml: |
+    auth_enabled: false
+
+    server:
+      http_listen_port: 3100
+
+    common:
+      instance_addr: 127.0.0.1
+      path_prefix: /loki
+      storage:
+        filesystem:
+          chunks_directory: /loki/chunks
+          rules_directory: /loki/rules
+      replication_factor: 1
+      ring:
+        kvstore:
+          store: inmemory
+
+    schema_config:
+      configs:
+        - from: 2020-10-24
+          store: tsdb
+          object_store: filesystem
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
+    ruler:
+      alertmanager_url: http://localhost:9093
+---
+
+#
+# Grafana
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - image: grafana/grafana-oss
+          name: grafana
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+        - image: mongodb/mongodb-community-server
+          name: mongodb
+      volumes:
+        - name: grafana-volume
+          configMap:
+            name: grafana-config
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: NodePort
+  selector:
+    app: grafana
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30082
+---
+
+#
+# MongoDB
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongodb
+  name: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - image: mongodb/mongodb-community-server
+          name: mongodb
+          ports:
+            - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+spec:
+  type: ClusterIP
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+
+#
+# Prometheus
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - image: prom/prometheus
+          name: prometheus
+          volumeMounts:
+            - mountPath: /etc/prometheus/prometheus.yml
+              name: grafana-volume
+              subPath: prometheus_yaml
+          ports:
+            - containerPort: 9090
+      volumes:
+        - name: grafana-volume
+          configMap:
+            name: grafana-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  type: ClusterIP
+  selector:
+    app: prometheus
+  ports:
+    - port: 9090
+      targetPort: 9090
+---
+
+#
+# Loki
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: loki
+  name: loki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+        - image: grafana/loki
+          name: loki
+          volumeMounts:
+            - mountPath: /etc/loki/local-config.yaml
+              name: grafana-volume
+              subPath: loki_yaml
+          ports:
+            - containerPort: 3100
+      volumes:
+        - name: grafana-volume
+          configMap:
+            name: grafana-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+spec:
+  type: ClusterIP
+  selector:
+    app: loki
+  ports:
+    - port: 3100
+      targetPort: 3100
+---
+
+#
+# MediaDB
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mdb
+  name: mdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mdb
+  template:
+    metadata:
+      labels:
+        app: mdb
+    spec:
+      containers:
+        - image: localhost/mdb:latest
+          imagePullPolicy: IfNotPresent
+          name: mdb
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mdb
+spec:
+  type: NodePort
+  selector:
+    app: mdb
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30081
