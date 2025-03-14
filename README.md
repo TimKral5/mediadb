@@ -32,7 +32,7 @@ from `http://localhost:3004`.
 > manually. For that, use the URLs `http://prometheus:9090` and
 > `http://loki:3100`.
 
-## Kubernetes
+### Kubernetes
 
 In order to run the application on Kubernetes, a running Kubernetes
 cluster and the CLI tool Kubectl is required.
@@ -44,3 +44,12 @@ application.
 The configuration can be applied with
 `kubectl apply -f deployment.yaml`.
 
+## Database Structure
+
+The following illustration shows the data structures from within the
+MongoDB database:
+
+![mdb-database_structure.png](./docs/img/mdb-database_structure.png)
+
+> **Note:** The database structure is not yet implemented like this.
+> This is, however, the aim of this project.
