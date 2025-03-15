@@ -13,6 +13,18 @@ are sent to a **Loki** and a **Prometheus** instance.
 
 ## Setup
 
+### Requirements
+
+To setup the application, the CLI tool Make is required. All the
+commands go through that and the specifications in the Makefile.
+
+Additionally, in the case of docker-compose, the respective
+installation has to be done in advance. Then, anything other than
+docker will require adjustments to the Makefile.
+
+> **Note:** Adjust the fields `DOCKER` and `DCOMPOSE` to make use
+> of the alternative system.
+
 ### Docker-Compose
 
 The repository has a `compose.yaml` file that contains the
@@ -21,7 +33,7 @@ configuration for docker-compose.
 Note that it has some marked lines that should be removed or edited
 in a production environment.
 
-Other than that, simply run `docker-compose up -d` to launch the
+Other than that, simply run `make run` to launch the
 containers.
 
 That's it. The API should now be available under
@@ -42,7 +54,7 @@ has all the settings and configurations required for running the
 application.
 
 The configuration can be applied with
-`kubectl apply -f deployment.yaml`.
+`make kube-apply`.
 
 ## API Structure
 
