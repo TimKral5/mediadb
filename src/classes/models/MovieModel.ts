@@ -5,7 +5,7 @@ export class MovieModel {
   private db: Db;
   private collection: Collection | undefined;
 
-  constructor(db: Db, ) {
+  constructor(db: Db) {
     this.db = db;
   }
 

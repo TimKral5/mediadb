@@ -2,21 +2,12 @@ import type { Express, Request, Response } from 'express';
 import { Registry } from 'prom-client';
 
 import type IController from '../../interfaces/IController';
-import RequestHandler from '../types/RequestHandler';
-import Logger from '../types/Logger';
+import MvcComponent from '../types/MvcComponent';
 
-export default class PrometheusApiController implements IController {
-  private baseRoute: string;
-  private registry: Registry;
-  private logger: Logger;
-
-  constructor(baseRoute: string, registry: Registry, logger: Logger) {
-    this.baseRoute = baseRoute;
-    this.registry = registry;
-    this.logger = logger;
-  }
-
-  private async getMetrics(req: Request, res: Response) {
+export default class PrometheusApiController
+  extends MvcComponent
+  implements IController {
+  private async getMetrics(_: Request, res: Response) {
     try {
       res.set('Content-Type', this.registry.contentType);
       res.end(await this.registry.metrics());
@@ -26,10 +17,7 @@ export default class PrometheusApiController implements IController {
     }
   }
 
-  registerRoutes(app: Express): void {
-    app.get(
-      this.baseRoute,
-      this.getMetrics.bind(this)
-    );
+  registerRoutes(baseRoute: string, app: Express): void {
+    app.get(baseRoute, this.getMetrics.bind(this));
   }
 }

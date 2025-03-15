@@ -1,7 +1,7 @@
 import Translation from './Translation';
 import Source from './Source';
 
-export default class Media {
+export default abstract class Media {
   public title: Translation[];
   public description: Translation[];
   public sources: Source[];

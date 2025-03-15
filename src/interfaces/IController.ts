@@ -2,6 +2,6 @@
 import type { Express } from 'express';
 
 export default interface IController {
-  registerRoutes(app: Express): void;
+  registerRoutes(baseRoute: string, app: Express): void;
 }
 
