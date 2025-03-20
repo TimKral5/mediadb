@@ -17,27 +17,62 @@
 
 #### Testing
 
-- [ ] Testing Data
-  - [ ] Movies
-  - [ ] Shows
-    - [ ] Seasons
-    - [ ] Episodes
-  - [ ] MovieCollections
+##### Testing Data
 
-- [ ] Unit Tests
-  - [ ] Test `Movie` class
-  - [ ] Test `Show` class
-  - [ ] Test `MovieCollection` class
-  - [ ] Test route `GET /movie?id={id}`
-  - [ ] Test route `GET /movie/search?q={query}`
-  - [ ] Test route `GET /show?id={id}`
-  - [ ] Test route `GET /show/search?q={query}`
-  - [ ] Test route `GET /show/collection?id={id}`
-  - [ ] Test route `GET /show/collection/search?q={query}`
+- [ ] Movies
+- [ ] Shows
+  - [ ] Seasons
+  - [ ] Episodes
+- [ ] MovieCollections
+
+##### Data Models
+
+- [ ] Test `Movie` class
+- [ ] Test `Show` class
+- [ ] Test `MovieCollection` class
+
+##### MVC Models
+
+- [ ] Test function `MovieModel.getMovie`
+- [ ] Test function `MovieModel.searchMovies`
+- [ ] Test function `MovieModel.getCollection`
+- [ ] Test function `MovieModel.searchCollections`
+- [ ] Test function `ShowModel.getShow`
+- [ ] Test function `ShowModel.searchShows`
+
+##### Routes
+
+- [ ] Test route `GET /movie?id={id}`
+- [ ] Test route `GET /movie/search?q={query}`
+- [ ] Test route `GET /movie/collection?id={id}`
+- [ ] Test route `GET /movie/collection/search?q={query}`
+- [ ] Test route `GET /show?id={id}`
+- [ ] Test route `GET /show/search?q={query}`
 
 ### 2. CR Operations
 
-//
+#### API
+
+- [ ] Movie API
+  - [ ] Create from JSON
+- [ ] Show API
+  - [ ] Create from JSON
+- [ ] MovieCollection API
+  - [ ] Create from JSON
+
+#### Testing
+
+##### MVC Models
+
+- [ ] Test function `MovieModel.createMovie`
+- [ ] Test function `MovieModel.createMovieCollection`
+- [ ] Test function `ShowModel.createShow`
+
+##### Routes
+
+- [ ] Test route `POST /movie` with JSON body
+- [ ] Test route `POST /movie/collection` with JSON body
+- [ ] Test route `POST /show` with JSON body
 
 ### 3. CRD Operations
 
