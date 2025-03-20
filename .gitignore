@@ -1,2 +1,3 @@
 node_modules/
 *.drawio.bkp
+/src/sample-data.ts

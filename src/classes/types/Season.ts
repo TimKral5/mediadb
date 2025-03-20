@@ -6,11 +6,11 @@ export default class Season extends Media {
   public episodes: Episode[];
 
   constructor();
-  constructor(data: { [key: string]: any });
+  constructor(data: Partial<Season>);
   
-  constructor(data: { [key: string]: any } = {}) {
+  constructor(data: Partial<Season> = {}) {
     super(data);
-    const episodes: { [key:string]: any }[] = data['episodes'] ?? [];
+    const episodes = data.episodes ?? [];
 
     this.episodes = episodes.map(episode => new Episode(episode));
   }

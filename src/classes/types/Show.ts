@@ -7,13 +7,13 @@ export default class Show extends Media {
   public seasons: Season[];
 
   constructor();
-  constructor(data: { [key: string]: any });
+  constructor(data: Partial<Show>);
   
-  constructor(data: { [key: string]: any } = {}) {
+  constructor(data: Partial<Show> = {}) {
     super(data);
-    const seasons: { [key: string]: any }[] = data['seasons'] ?? [];
+    const seasons = data.seasons ?? [];
 
-    this.genres = data['genres'] ?? [];
+    this.genres = data.genres ?? [];
     this.seasons = seasons.map(season => new Season(season));
   }
 }

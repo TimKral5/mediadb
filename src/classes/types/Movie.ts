@@ -4,10 +4,10 @@ export default class Movie extends Media {
   public genres: string[];
   
   constructor();
-  constructor(data: { [key: string]: any });
+  constructor(data: Partial<Movie>);
 
-  constructor(data: { [key: string]: any } = {}) {
+  constructor(data: Partial<Movie> = {}) {
     super(data);
-    this.genres = data['genres'] ?? [];
+    this.genres = data.genres ?? [];
   }
 }

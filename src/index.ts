@@ -4,18 +4,12 @@ import { transports, format } from 'winston';
 import LokiTransport from 'winston-loki';
 
 import App from './classes/App';
-import PrometheusApiController from './classes/controllers/PrometheusApiController';
 import Logger from './classes/types/Logger';
-import MongoInitializer from './classes/types/MongoInitializer';
 
 // MongoDB
 const MONGODB_URL = 'mongodb://root:example@mongodb:27017';
 const client = await MongoClient.connect(MONGODB_URL);
-await new MongoInitializer(client, 'mdb').createCollections([
-  'mdb_movies',
-  'mdb_shows',
-  'mdb_books'
-]);
+const db = client.db('mdb');
 
 // Prometheus
 const registry = new Registry();
@@ -31,10 +25,7 @@ const logger = new Logger([
   })
 ]);
 
-const app = new App(logger);
+const app = new App(logger, registry, db);
 
-app.registerControllers([
-  new PrometheusApiController('/metrics', registry, logger)
-]);
-
+app.main();
 app.launch(3000);

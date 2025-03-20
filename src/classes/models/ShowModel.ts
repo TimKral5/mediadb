@@ -1,19 +1,43 @@
 import { config } from '../../config';
-
 import { ObjectId } from 'mongodb';
 
+import MongoUtils from '../utils/MongoUtils';
 import Show from '../types/Show';
 import MvcComponent from '../types/MvcComponent';
+import type IModel from '../../interfaces/IModel';
 
 export default class ShowModel
-  extends MvcComponent {
-
-  getShowById(id: ObjectId): Show {
-    throw new Error('Not implemented');
+  extends MvcComponent
+  implements IModel {
+  
+  createCollection(collName: string) {
+    MongoUtils.initCollection(this.db, collName, coll => {
+      coll.createIndex({
+        'title.text': 'text',
+        'description.text': 'text'
+      });
+    });
   }
 
-  searchShow(query: string): Show[] {
+  async getShow(id: string): Promise<Show | {}> {
     const collection = this.db.collection(config.tables['Show']);
-    collection.find({  });
+    const result = await collection
+      .findOne({ _id: new ObjectId(id) });
+
+    if (result)
+      return new Show(<any>result);
+    return {};
+  }
+
+  async searchShows(query: string): Promise<Show[]> {
+    const collection = this.db.collection(config.tables['Show']);
+    const results = await collection
+      .find({ $text: { $search: query } })
+      .toArray();
+
+    this.logger.log(JSON.stringify(results));
+
+    const arr = results.map(item => new Show(<object>item));
+    return arr;
   }
 }

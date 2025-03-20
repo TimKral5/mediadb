@@ -2,7 +2,8 @@
 import { createLogger, Logger as WinstonLogger } from 'winston';
 
 export default class Logger {
-  logger: WinstonLogger;
+  private logger: WinstonLogger;
+
   constructor(transports: Array<any>) {
     this.logger = createLogger({
       transports: transports

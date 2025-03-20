@@ -19,21 +19,25 @@ rm:
 reset: rm run
 
 start:
-	-${DOCKER} rmi localhost/mdb:latest
-	${DCOMPOSE} up -d
+	-${DOCKER} start mdb-mdb-1
+	-${DOCKER} start mdb-mongodb-1
+	-${DOCKER} start mdb-prometheus-1
+	-${DOCKER} start mdb-loki-1
+	-${DOCKER} start mdb-grafana-1
 
 stop:
-	-${DOCKER} stop mdb_mdb_1
-	-${DOCKER} stop mdb_mongodb_1
-	-${DOCKER} stop mdb_prometheus_1
-	-${DOCKER} stop mdb_loki_1
-	-${DOCKER} stop mdb_grafana_1
+	-${DOCKER} stop mdb-mdb-1
+	-${DOCKER} stop mdb-mongodb-1
+	-${DOCKER} stop mdb-prometheus-1
+	-${DOCKER} stop mdb-loki-1
+	-${DOCKER} stop mdb-grafana-1
 
 rebuild:
-	-${DOCKER} stop mdb_mdb_1 && ${DOCKER} rm mdb_mdb_1
-	-${DOCKER} stop mdb_prometheus_1 && ${DOCKER} rm mdb_prometheus_1
-	-${DOCKER} stop mdb_loki_1 && ${DOCKER} rm mdb_loki_1
-	-${DOCKER} rmi localhost/mdb:latest
+	-${DOCKER} stop mdb-mdb-1 && ${DOCKER} rm mdb-mdb-1
+	-${DOCKER} stop mdb-mongodb-1 && ${DOCKER} rm mdb-mongodb-1
+	-${DOCKER} stop mdb-prometheus-1 && ${DOCKER} rm mdb-prometheus-1
+	-${DOCKER} stop mdb-loki-1 && ${DOCKER} rm mdb-loki-1
+	-${DOCKER} rmi mdb:latest
 	${DCOMPOSE} up -d
 
 kube-apply:

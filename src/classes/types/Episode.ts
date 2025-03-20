@@ -3,9 +3,9 @@ import Media from './Media';
 
 export default class Episode extends Media {
   constructor();
-  constructor(data: { [key: string]: any });
+  constructor(data: Partial<Episode>);
   
-  constructor(data: { [key: string]: any } = {}) {
+  constructor(data: Partial<Episode> = {}) {
     super(data);
   }
 }
