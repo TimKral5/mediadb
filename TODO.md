@@ -17,10 +17,11 @@
 
 #### Configuration
 
-- [ ] Environment Variables
-  - [ ] Read port from environment variable `MDB_PORT`
-  - [ ] Read mongodb url from environment variable `MDB_MONGO_URL`
-  - [ ] Read loki database url from environment variable `MDB_LOKI_URL`
+- [x] Environment Variables
+  - [x] Read environment variable `NODE_ENV` for testing routine
+  - [x] Read port from environment variable `MDB_PORT`
+  - [x] Read mongodb url from environment variable `MDB_MONGODB_URL`
+  - [x] Read loki database url from environment variable `MDB_LOKI_URL`
 
 #### Testing
 
@@ -31,6 +32,13 @@
   - [ ] Seasons
   - [ ] Episodes
 - [ ] MovieCollections
+
+##### Testing Routine
+
+- [ ] On development, apply testing routine
+  - [ ] Load testing data to database
+  - [ ] Execute tests
+  - [ ] Cleanup database
 
 ##### Data Models
 

@@ -7,6 +7,11 @@ services:
     networks:
       - mdb
       - databases
+    environment:
+      NODE_ENV: development
+      MDB_PORT: 3000
+      MDB_MONGODB_URL: "mongodb://root:example@mongodb:27017"
+      MDB_LOKI_URL: "http://loki:3100"
   mongodb:
     image: docker.io/mongodb/mongodb-community-server
     networks:
