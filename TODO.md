@@ -1,7 +1,7 @@
 # MediaDB TODO
 
 ## Milestones
-### 1. Read access
+### 1. Read Access
 
 #### API
 
@@ -14,6 +14,13 @@
 - [ ] MovieCollection API
   - [ ] Get with id
   - [ ] Search by title or description
+
+#### Configuration
+
+- [ ] Environment Variables
+  - [ ] Read port from environment variable `MDB_PORT`
+  - [ ] Read mongodb url from environment variable `MDB_MONGO_URL`
+  - [ ] Read loki database url from environment variable `MDB_LOKI_URL`
 
 #### Testing
 
