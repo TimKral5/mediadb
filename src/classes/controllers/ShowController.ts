@@ -58,7 +58,7 @@ export default class ShowController
   }
 
   registerRoutes(baseRoute: string, app: Express) {
-    app.get(`${baseRoute}/show/:id`, this.getShow.bind(this));
+    app.get(`${baseRoute}/shows/:id`, this.getShow.bind(this));
     app.get(`${baseRoute}/shows`, this.searchShows.bind(this));
   }
 }

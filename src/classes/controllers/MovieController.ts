@@ -87,9 +87,9 @@ export default class MovieController
   }
 
   registerRoutes(baseRoute: string, app: Express) {
-    app.get(`${baseRoute}/movie/:id`, this.getMovie.bind(this));
+    app.get(`${baseRoute}/movies/:id`, this.getMovie.bind(this));
     app.get(`${baseRoute}/movies`, this.searchMovies.bind(this));
-    app.get(`${baseRoute}/movie-collection/:id`, this.getCollection.bind(this));
+    app.get(`${baseRoute}/movie-collections/:id`, this.getCollection.bind(this));
     app.get(`${baseRoute}/movie-collections`, this.searchCollections.bind(this));
   }
 }
