@@ -75,12 +75,12 @@
 
 #### API
 
-- [ ] Movie API
-  - [ ] Create from JSON
-- [ ] Show API
-  - [ ] Create from JSON
-- [ ] MovieCollection API
-  - [ ] Create from JSON
+- [x] Movie API
+  - [x] Create from JSON
+- [x] Show API
+  - [x] Create from JSON
+- [x] MovieCollection API
+  - [x] Create from JSON
 
 #### Testing
 
