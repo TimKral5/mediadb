@@ -8,9 +8,9 @@ import MovieController from './controllers/MovieController';
 export default class App extends Application {
   main() {
     this.registerControllers([
-      ['/show', this.initMvcCompontent(ShowController)],
+      ['/api/v0', this.initMvcCompontent(ShowController)],
       ['/metrics', this.initMvcCompontent(PrometheusApiController)],
-      ['/movie', this.initMvcCompontent(MovieController)]
+      ['/api/v0', this.initMvcCompontent(MovieController)]
     ]);
   }
 }

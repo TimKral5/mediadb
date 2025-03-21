@@ -63,4 +63,11 @@ export default class MovieModel
     const arr = results.map(item => new MovieCollection(<object>item));
     return arr;
   }
+
+  async createMovie(data: Partial<Movie>): Promise<string> {
+    const movie = new Movie(data);
+    return (await this.db
+      .collection(config.tables['Movie'])
+      .insertOne(movie)).insertedId.toString();
+  }
 }

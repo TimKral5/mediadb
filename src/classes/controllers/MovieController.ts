@@ -31,7 +31,7 @@ export default class MovieController
   }
 
   private async getMovie(req: Request, res: Response) {
-    const id = <string>req.query['id'];
+    const id = <string>req.params['id'];
 
     try {
       const data = await this.model.getMovie(id);
@@ -59,7 +59,7 @@ export default class MovieController
   }
 
   private async getCollection(req: Request, res: Response) {
-    const id = <string>req.query['id'];
+    const id = <string>req.params['id'];
 
     try {
       const data = await this.model.getCollection(id);
@@ -87,9 +87,9 @@ export default class MovieController
   }
 
   registerRoutes(baseRoute: string, app: Express) {
-    app.get(baseRoute, this.getMovie.bind(this));
-    app.get(`${baseRoute}/search`, this.searchMovies.bind(this));
-    app.get(`${baseRoute}/collection`, this.getCollection.bind(this));
-    app.get(`${baseRoute}/collection/search`, this.searchCollections.bind(this));
+    app.get(`${baseRoute}/movie/:id`, this.getMovie.bind(this));
+    app.get(`${baseRoute}/movies`, this.searchMovies.bind(this));
+    app.get(`${baseRoute}/movie-collection/:id`, this.getCollection.bind(this));
+    app.get(`${baseRoute}/movie-collections`, this.searchCollections.bind(this));
   }
 }

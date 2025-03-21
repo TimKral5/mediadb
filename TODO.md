@@ -64,6 +64,13 @@
 - [ ] Test route `GET /show?id={id}`
 - [ ] Test route `GET /show/search?q={query}`
 
+##### Compose & Kubernetes
+
+- [ ] Adjust volume mounts for proper usage of
+- [ ] Add LoadBalancer to kubernetes manifest
+- [ ] Test deployment on MicroK8s
+  - [ ] Test with Cluster on AWS
+
 ### 2. CR Operations
 
 #### API

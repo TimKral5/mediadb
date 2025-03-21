@@ -32,7 +32,7 @@ export default class ShowController
 
   private async getShow(req: Request, res: Response) {
     try {
-      const id = <string>req.query['id'];
+      const id = <string>req.params['id'];
       const data = await this.model.getShow(id);
       res.json(data);
     }
@@ -58,7 +58,7 @@ export default class ShowController
   }
 
   registerRoutes(baseRoute: string, app: Express) {
-    app.get(baseRoute, this.getShow.bind(this));
-    app.get(`${baseRoute}/search`, this.searchShows.bind(this));
+    app.get(`${baseRoute}/show/:id`, this.getShow.bind(this));
+    app.get(`${baseRoute}/shows`, this.searchShows.bind(this));
   }
 }
