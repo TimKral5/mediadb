@@ -10,8 +10,8 @@ export default class ShowModel
   extends MvcComponent
   implements IModel {
   
-  createCollection(collName: string) {
-    MongoUtils.initCollection(this.db, collName, coll => {
+  createCollections() {
+    MongoUtils.initCollection(this.db, 'mdb_shows', coll => {
       coll.createIndex({
         'title.text': 'text',
         'description.text': 'text'
@@ -39,5 +39,17 @@ export default class ShowModel
 
     const arr = results.map(item => new Show(<object>item));
     return arr;
+  }
+
+  async createShow(data: Partial<Show>): Promise<string> {
+    const show = new Show(data);
+
+    const obj: { [key: string]: any } = { ...show };
+    obj.id = undefined;
+    obj._id = undefined;
+
+    return (await this.db
+      .collection(config.tables['Show'])
+      .insertOne(obj)).insertedId.toString();
   }
 }

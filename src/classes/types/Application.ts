@@ -17,6 +17,8 @@ export default abstract class Application {
     private registry: Registry,
     private db: Db) {
     this.express = express();
+    this.express.use(express.json());
+    this.express.use(express.urlencoded({ extended: true }));
   }
 
   public initMvcCompontent<T>(_class: MvcType<T>) {

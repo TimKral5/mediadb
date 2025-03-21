@@ -11,7 +11,7 @@ export default class MovieCollection extends Media {
   
   constructor(data: Partial<MovieCollection> = {}) {
     super(data);
-    let movies: { [key: string]: any }[] = data['movies'] ?? [];
+    let movies: { [key: string]: any }[] = (<{ [key: string]: any }>data)['_movies'] ?? data['movies'] ?? [];
 
     this.genres = data['genres'] ?? [];
     this.movies = movies.map(movie => new Movie(movie));

@@ -27,7 +27,7 @@ export default class ShowController
   ) {
     super(logger, registry, db);
     this.model = new ShowModel(logger, registry, db);
-    this.model.createCollection('mdb_shows');
+    this.model.createCollections();
   }
 
   private async getShow(req: Request, res: Response) {
@@ -57,8 +57,34 @@ export default class ShowController
     }
   }
 
+  private async createShow(req: Request, res: Response) {
+    try {
+      let data = {};
+      try {
+        data = req.body;
+        this.logger.log(JSON.stringify(data));
+      }
+      catch (_err) {
+        const err = <Error>_err;
+        res.status(400).json({});
+        this.logger.error(err.toString());
+        return;
+      }
+      const id = await this.model.createShow(data);
+      res.json({
+        new_id: id
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
   registerRoutes(baseRoute: string, app: Express) {
     app.get(`${baseRoute}/shows/:id`, this.getShow.bind(this));
     app.get(`${baseRoute}/shows`, this.searchShows.bind(this));
+    app.post(`${baseRoute}/shows`, this.createShow.bind(this));
   }
 }

@@ -11,8 +11,15 @@ export default class MovieModel
   extends MvcComponent
   implements IModel {
   
-  createCollection(collName: string) {
-    MongoUtils.initCollection(this.db, collName, coll => {
+  createCollections() {
+    MongoUtils.initCollection(this.db, config.tables['Movie'], coll => {
+      coll.createIndex({
+        'title.text': 'text',
+        'description.text': 'text'
+      });
+    });
+
+    MongoUtils.initCollection(this.db, config.tables['MovieCollection'], coll => {
       coll.createIndex({
         'title.text': 'text',
         'description.text': 'text'
@@ -44,19 +51,44 @@ export default class MovieModel
 
   async getCollection(id: string) {
     const collection = this.db.collection(config.tables['MovieCollection']);
-    const result = await collection
-      .findOne({ _id: new ObjectId(id) });
+    const results = await collection
+      .aggregate([
+        { $match: { _id: new ObjectId(id) } },
+        {
+          $lookup: {
+            from: 'mdb_movies',
+            as: '_movies',
+            localField: 'movies',
+            foreignField: '_id'
+          }
+        }
+      ]).toArray();
 
-    if (result)
-      return new Movie(<any>result);
+    if (results.length > 0)
+      return new MovieCollection(<any>results[0]);
     return {};
   }
 
   async searchCollections(query: string) {
     const collection = this.db.collection(config.tables['MovieCollection']);
     const results = await collection
-      .find({ $text: { $search: query } })
-      .toArray();
+      .aggregate([
+        {
+          $match: {
+            $text: {
+              $search: query
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: 'mdb_movies',
+            as: '_movies',
+            localField: 'movies',
+            foreignField: '_id'
+          }
+        }
+      ]).toArray();
 
     this.logger.log(JSON.stringify(results));
 
@@ -64,10 +96,35 @@ export default class MovieModel
     return arr;
   }
 
-  async createMovie(data: Partial<Movie>): Promise<string> {
+  async createMovie(data: Partial<Movie>): Promise<ObjectId> {
     const movie = new Movie(data);
+
+    const obj: { [key: string]: any } = { ...movie };
+    obj.id = undefined;
+    obj._id = undefined;
+    
     return (await this.db
       .collection(config.tables['Movie'])
-      .insertOne(movie)).insertedId.toString();
+      .insertOne(obj)).insertedId;
+  }
+
+  async createMovieCollection(data: Partial<MovieCollection>): Promise<ObjectId> {
+    const coll = new MovieCollection(data);
+
+    const obj: { [key: string]: any } = { ...coll };
+    obj.id = undefined;
+    obj._id = undefined;
+
+    const promises: Promise<ObjectId>[] = [];
+    for (let i = 0; i < coll.movies.length; i++) {
+      const movie = coll.movies[i];
+      promises.push(this.createMovie(movie));
+    }
+
+    obj.movies = await Promise.all(promises);
+
+    return (await this.db
+      .collection(config.tables['MovieCollection'])
+      .insertOne(obj)).insertedId;
   }
 }

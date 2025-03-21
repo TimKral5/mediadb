@@ -1,4 +1,4 @@
 
 export default interface IModel {
-  createCollection(collName: string): void;
+  createCollections(): void;
 }

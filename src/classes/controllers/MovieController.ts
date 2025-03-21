@@ -27,7 +27,7 @@ export default class MovieController
   ) {
     super(logger, registry, db);
     this.model = this.initMvcComponent(MovieModel);
-    this.model.createCollection('mdb_movies');
+    this.model.createCollections();
   }
 
   private async getMovie(req: Request, res: Response) {
@@ -86,10 +86,63 @@ export default class MovieController
     }
   }
 
+  private async createMovie(req: Request, res: Response) {
+    try {
+      let data = {};
+      try {
+        data = req.body;
+        this.logger.log(JSON.stringify(data));
+      }
+      catch (_err) {
+        const err = <Error>_err;
+        res.status(400).json({});
+        this.logger.error(err.toString());
+        return;
+      }
+      const id = await this.model.createMovie(data);
+      res.json({
+        new_id: id.toString()
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
+  private async createMovieCollection(req: Request, res: Response) {
+    try {
+      let data = {};
+      try {
+        data = req.body;
+        this.logger.log(JSON.stringify(data));
+      }
+      catch (_err) {
+        const err = <Error>_err;
+        res.status(400).json({});
+        this.logger.error(err.toString());
+        return;
+      }
+      const id = await this.model.createMovieCollection(data);
+      res.json({
+        new_id: id.toString()
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
   registerRoutes(baseRoute: string, app: Express) {
     app.get(`${baseRoute}/movies/:id`, this.getMovie.bind(this));
     app.get(`${baseRoute}/movies`, this.searchMovies.bind(this));
+    app.post(`${baseRoute}/movies`, this.createMovie.bind(this));
+    
     app.get(`${baseRoute}/movie-collections/:id`, this.getCollection.bind(this));
     app.get(`${baseRoute}/movie-collections`, this.searchCollections.bind(this));
+    app.post(`${baseRoute}/movie-collections`, this.createMovieCollection.bind(this));
   }
 }
