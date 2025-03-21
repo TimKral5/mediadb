@@ -6,7 +6,7 @@ import LokiTransport from 'winston-loki';
 import App from './classes/App';
 import Logger from './classes/types/Logger';
 
-const ENV = process.env['NODE_ENV'] ?? 'development';
+const ENV = (process.env['NODE_ENV'] ?? 'development').toLowerCase();
 const MDB_PORT = parseInt(process.env['MDB_PORT'] ?? '3000');
 const MDB_MONGODB_URL = process.env['MDB_MONGODB_URL'];
 const MDB_LOKI_URL = process.env['MDB_LOKI_URL'];
@@ -16,6 +16,7 @@ if (!MDB_MONGODB_URL || !MDB_LOKI_URL)
 
 if (ENV === 'development') {
   // testing routine goes here
+  
 }
 
 // MongoDB
