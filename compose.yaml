@@ -1,7 +1,7 @@
 services:
   mdb:
     image: mdb
-    build: ./src
+    build: .
     ports:
       - "3005:3000"
     networks:
