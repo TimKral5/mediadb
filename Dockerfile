@@ -2,7 +2,7 @@
 FROM oven/bun:latest AS installer
 
 WORKDIR /src
-COPY ./src .
+COPY ./server .
 
 RUN bun install
 
