@@ -1,20 +1,21 @@
 # Stage 1: Install Packages
 FROM oven/bun:latest AS installer
 
-WORKDIR /src
+WORKDIR /src/server
 COPY ./server .
+COPY ./shared ../shared
 
 RUN bun install
 
 # Stage 2: Build Application
 FROM installer AS builder
 
-WORKDIR /src
+WORKDIR /src/server
 
 RUN \
   bun build \
     --compile \
-    --outfile mdb \
+    --outfile ../mdb \
     --target=bun-linux-x64 \
     ./index.ts
 

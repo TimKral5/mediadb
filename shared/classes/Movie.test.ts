@@ -1,5 +1,5 @@
 import { test, describe, beforeEach, expect } from 'bun:test';
-import Movie from './Movie.ts';
+import { Movie } from './Movie.ts';
 
 const data: Partial<Movie> = {
   title: [],

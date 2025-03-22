@@ -1,8 +1,11 @@
 import { config } from '../../config';
 import { ObjectId } from 'mongodb';
 
+import {
+  Show
+} from 'mediadb-shared';
+
 import MongoUtils from '../utils/MongoUtils';
-import Show from '../types/Show';
 import MvcComponent from '../types/MvcComponent';
 import type IModel from '../../interfaces/IModel';
 

@@ -1,8 +1,8 @@
 
-import Media from './Media';
-import Season from './Season';
+import { Media } from './Media';
+import { Season } from './Season';
 
-export default class Show extends Media {
+export class Show extends Media {
   public genres: string[];
   public seasons: Season[];
 
@@ -15,5 +15,11 @@ export default class Show extends Media {
 
     this.genres = data.genres ?? [];
     this.seasons = seasons.map(season => new Season(season));
+  }
+
+  dump() {
+    const obj = super.dump();
+    obj.seasons = this.seasons.map(season => season.dump());
+    return obj;
   }
 }

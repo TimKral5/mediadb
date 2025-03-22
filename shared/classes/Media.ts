@@ -1,7 +1,7 @@
-import Translation from './Translation';
-import Source from './Source';
+import { Translation } from './Translation';
+import { Source } from './Source';
 
-export default abstract class Media {
+export abstract class Media {
   public id: string | undefined;
   public title: Translation[];
   public description: Translation[];
@@ -22,5 +22,12 @@ export default abstract class Media {
       title => new Translation(title)
     );
     this.sources = sources.map(source => new Source(source));
+  }
+
+  dump() {
+    const obj: { [key: string]: any } = { ...this };
+    obj.id = undefined;
+    obj._id = undefined;
+    return obj;
   }
 }

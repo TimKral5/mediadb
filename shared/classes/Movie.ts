@@ -1,6 +1,6 @@
-import Media from './Media';
+import { Media } from './Media';
 
-export default class Movie extends Media {
+export class Movie extends Media {
   public genres: string[];
   
   constructor();
@@ -9,5 +9,10 @@ export default class Movie extends Media {
   constructor(data: Partial<Movie> = {}) {
     super(data);
     this.genres = data.genres ?? [];
+  }
+
+  dump() {
+    const obj = super.dump();
+    return obj;
   }
 }

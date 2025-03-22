@@ -1,4 +1,4 @@
-export default class Translation {
+export class Translation {
   public language: string;
   public text: string;
 

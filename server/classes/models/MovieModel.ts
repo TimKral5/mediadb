@@ -1,9 +1,12 @@
 import { config } from '../../config';
 import { ObjectId } from 'mongodb';
 
+import {
+  Movie,
+  MovieCollection
+} from 'mediadb-shared';
+
 import MongoUtils from '../utils/MongoUtils';
-import Movie from '../types/Movie';
-import MovieCollection from '../types/MovieCollection';
 import MvcComponent from '../types/MvcComponent';
 import type IModel from '../../interfaces/IModel';
 

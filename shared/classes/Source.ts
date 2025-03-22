@@ -1,5 +1,5 @@
 
-export default class Source {
+export class Source {
   public type: string;
   public source: string;
   public data: string;
