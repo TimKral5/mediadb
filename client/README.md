@@ -19,3 +19,11 @@ bun build \
   --outfile mediadb-client.js \
   ./index.ts
 ```
+
+## Running the Development Environment
+
+A dev-environment can be spun up with the following command:
+
+```bash
+bun ./test/index.html
+```
