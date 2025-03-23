@@ -13,12 +13,11 @@ jobs:
           bun-version: latest
 
       # Install Dependencies
+      - run: cd server && bun install
       - run: cd shared && bun install
       - run: cd client && bun install
-      - run: cd fuzzing && bun install
-
-      # Run Compose
-      - run: docker compose up -d --build
       
       # Run Tests
-      - run: MDB_ENDPOINT='http://localhost:3005/api/v0' bun test
+      - run: cd server && bun test
+      - run: cd shared && bun test
+      - run: cd client && bun test
