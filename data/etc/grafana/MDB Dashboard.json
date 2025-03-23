@@ -125,22 +125,6 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "increase(mdb_get_movie_collection_calls[1m])",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "legendFormat": "Get Movie Collection",
-          "range": true,
-          "refId": "Get Movie Collection",
-          "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "eegpelz7fmupsa"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
           "expr": "increase(mdb_search_movies_calls[1m])",
           "fullMetaSearch": false,
           "hide": false,
@@ -157,6 +141,22 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
+          "expr": "increase(mdb_get_movie_collection_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Get Movie Collection",
+          "range": true,
+          "refId": "Get Movie Collection",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
           "expr": "increase(mdb_search_movie_collections_calls[1m])",
           "fullMetaSearch": false,
           "hide": false,
@@ -164,6 +164,38 @@
           "legendFormat": "Search Movie Collections",
           "range": true,
           "refId": "Search Movie Collections",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "increase(mdb_get_show_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Get Show",
+          "range": true,
+          "refId": "Get Show",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "increase(mdb_search_shows_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Search Shows",
+          "range": true,
+          "refId": "Search Shows",
           "useBackend": false
         }
       ],
@@ -282,6 +314,22 @@
           "range": true,
           "refId": "Create Movie Collection",
           "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "increase(mdb_create_show_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Create Show",
+          "range": true,
+          "refId": "Create Show",
+          "useBackend": false
         }
       ],
       "title": "Write - Endpoint Calls",
@@ -391,6 +439,6 @@
   "timezone": "browser",
   "title": "MDB Dashboard",
   "uid": "fegphfidfqo74a",
-  "version": 14,
+  "version": 18,
   "weekStart": ""
 }
