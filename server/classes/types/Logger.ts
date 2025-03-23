@@ -6,7 +6,18 @@ export default class Logger {
 
   constructor(transports: Array<any>) {
     this.logger = createLogger({
-      transports: transports
+      transports: transports,
+      levels: {
+        emerg: 0,
+        alert: 1,
+        crit: 2,
+        error: 3,
+        warning: 4,
+        notice: 5,
+        info: 6,
+        debug: 7
+      },
+      level: 'debug'
     });
   }
 
@@ -20,5 +31,9 @@ export default class Logger {
 
   error(message: string) {
     this.logger.error(message);
+  }
+
+  debug(message: string) {
+    this.logger.debug(message);
   }
 }

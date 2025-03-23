@@ -38,8 +38,6 @@ export default class ShowModel
       .find({ $text: { $search: query } })
       .toArray();
 
-    this.logger.log(JSON.stringify(results));
-
     const arr = results.map(item => new Show(<object>item));
     return arr;
   }

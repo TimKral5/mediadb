@@ -46,8 +46,6 @@ export default class MovieModel
       .find({ $text: { $search: query } })
       .toArray();
 
-    this.logger.log(JSON.stringify(results));
-
     const arr = results.map(item => new Movie(<object>item));
     return arr;
   }
@@ -92,8 +90,6 @@ export default class MovieModel
           }
         }
       ]).toArray();
-
-    this.logger.log(JSON.stringify(results));
 
     const arr = results.map(item => new MovieCollection(<object>item));
     return arr;

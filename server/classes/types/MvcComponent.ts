@@ -1,6 +1,9 @@
 
 import Logger from './Logger';
-import { Registry } from 'prom-client';
+import {
+  Registry,
+  Counter
+} from 'prom-client';
 import { Db } from 'mongodb';
 
 type MvcConstructor<T> =
@@ -10,7 +13,7 @@ export default abstract class MvcComponent {
   constructor(
     readonly logger: Logger,
     readonly registry: Registry,
-    readonly db: Db
+    readonly db: Db,
   ) {}
 
   initMvcComponent<T>(_class: MvcConstructor<T>) {

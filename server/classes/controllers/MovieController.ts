@@ -5,7 +5,11 @@ import type {
   Response
 } from 'express';
 
-import { Registry } from 'prom-client';
+import {
+  Registry,
+  Counter
+} from 'prom-client';
+
 import { Db } from 'mongodb';
 
 import type IController from '../../interfaces/IController';
@@ -20,6 +24,29 @@ export default class MovieController
 
   private model: MovieModel;
 
+  private counters: { [key: string]: Counter };
+
+  private createCounter(name: string, help: string) {
+    this.counters[name] = new Counter({
+      name: `mdb_${name}_calls`,
+      help
+    });
+  }
+
+  private registerCounters() {
+    const helptext = 'Amount of calls to Endpoint';
+
+    this.createCounter('get_movie', helptext);
+    this.createCounter('get_movie_collection', helptext);
+    this.createCounter('search_movies', helptext);
+    this.createCounter('search_movie_collections', helptext);
+    this.createCounter('create_movie', helptext);
+    this.createCounter('create_movie_collection', helptext);
+
+    Object.values(this.counters).forEach(
+      counter => this.registry.registerMetric(counter));
+  }
+
   constructor(
     logger: Logger,
     registry: Registry,
@@ -28,9 +55,14 @@ export default class MovieController
     super(logger, registry, db);
     this.model = this.initMvcComponent(MovieModel);
     this.model.createCollections();
+
+    this.counters = {};
+    this.registerCounters();
   }
 
   private async getMovie(req: Request, res: Response) {
+    this.logger.debug(`GET ${req.url}`);
+    this.counters['get_movie'].inc();
     const id = <string>req.params['id'];
 
     try {
@@ -45,6 +77,8 @@ export default class MovieController
   }
 
   private async searchMovies(req: Request, res: Response) {
+    this.logger.debug(`GET ${req.url}`);
+    this.counters['search_movies'].inc();
     const query = <string>req.query['q'];
 
     try {
@@ -59,6 +93,8 @@ export default class MovieController
   }
 
   private async getCollection(req: Request, res: Response) {
+    this.logger.debug(`GET ${req.url}`);
+    this.counters['get_movie_collection'].inc();
     const id = <string>req.params['id'];
 
     try {
@@ -73,6 +109,8 @@ export default class MovieController
   }
 
   private async searchCollections(req: Request, res: Response) {
+    this.logger.debug(`GET ${req.url}`);
+    this.counters['search_movie_collections'].inc();
     const query = <string>req.query['q'];
 
     try {
@@ -87,11 +125,12 @@ export default class MovieController
   }
 
   private async createMovie(req: Request, res: Response) {
+    this.logger.debug(`POST ${req.url}`);
+    this.counters['create_movie'].inc();
     try {
       let data = {};
       try {
         data = req.body;
-        this.logger.log(JSON.stringify(data));
       }
       catch (_err) {
         const err = <Error>_err;
@@ -112,11 +151,12 @@ export default class MovieController
   }
 
   private async createMovieCollection(req: Request, res: Response) {
+    this.logger.debug(`POST ${req.url}`);
+    this.counters['create_movie_collection'].inc();
     try {
       let data = {};
       try {
         data = req.body;
-        this.logger.log(JSON.stringify(data));
       }
       catch (_err) {
         const err = <Error>_err;

@@ -5,7 +5,10 @@ import type {
   Response
 } from 'express';
 
-import { Registry } from 'prom-client';
+import {
+  Registry,
+  Counter
+} from 'prom-client';
 import { Db } from 'mongodb';
 
 import type IController from '../../interfaces/IController';
@@ -20,6 +23,26 @@ export default class ShowController
 
   private model: ShowModel;
 
+  private counters: { [key: string]: Counter };
+
+  private createCounter(name: string, help: string) {
+    this.counters[name] = new Counter({
+      name: `mdb_${name}_calls`,
+      help
+    });
+  }
+
+  private registerCounters() {
+    const helptext = 'Amount of calls to Endpoint';
+
+    this.createCounter('get_show', helptext);
+    this.createCounter('search_shows', helptext);
+    this.createCounter('create_show', helptext);
+
+    Object.values(this.counters).forEach(
+      counter => this.registry.registerMetric(counter));
+  }
+
   constructor(
     logger: Logger,
     registry: Registry,
@@ -28,9 +51,14 @@ export default class ShowController
     super(logger, registry, db);
     this.model = new ShowModel(logger, registry, db);
     this.model.createCollections();
+
+    this.counters = {};
+    this.registerCounters();
   }
 
   private async getShow(req: Request, res: Response) {
+    this.logger.debug(`GET ${req.url}`);
+    this.counters['get_show'].inc();
     try {
       const id = <string>req.params['id'];
       const data = await this.model.getShow(id);
@@ -44,6 +72,8 @@ export default class ShowController
   }
 
   private async searchShows(req: Request, res: Response) {
+    this.logger.debug(`GET ${req.url}`);
+    this.counters['search_shows'].inc();
     const query = <string>req.query['q'];
 
     try {
@@ -58,11 +88,12 @@ export default class ShowController
   }
 
   private async createShow(req: Request, res: Response) {
+    this.logger.debug(`POST ${req.url}`);
+    this.counters['create_show'].inc();
     try {
       let data = {};
       try {
         data = req.body;
-        this.logger.log(JSON.stringify(data));
       }
       catch (_err) {
         const err = <Error>_err;
