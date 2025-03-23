@@ -44,7 +44,6 @@ export class MediaDbConnection {
     Object.entries(query)
       .forEach(prop => url.searchParams
         .append(prop[0], <string>prop[1]));
-    console.log(url.toString());
     
     const res = await fetch(url);
     const data = <Partial<Movie>[]>(await res.json());
@@ -57,7 +56,6 @@ export class MediaDbConnection {
     Object.entries(query)
       .forEach(prop => url.searchParams
         .append(prop[0], <string>prop[1]));
-    console.log(url.toString());
     
     const res = await fetch(url);
     const data = <Partial<MovieCollection>[]>(await res.json());
@@ -70,7 +68,6 @@ export class MediaDbConnection {
     Object.entries(query)
       .forEach(prop => url.searchParams
         .append(prop[0], <string>prop[1]));
-    console.log(url.toString());
     
     const res = await fetch(url);
     const data = <Partial<Show>[]>(await res.json());

@@ -20,6 +20,9 @@ git checkout -b feature/<issue_id>--<issue_title>
 # Or create a fix if it's a bugfix
 git checkout -b fix/<issue_id>--<issue_title>
 
+# After applying changes, run the tests
+MDB_ENDPOINT=<endpoint> bun test
+
 # Push after applying the changes
 git push --set-upstream origin <branch-name>
 ```
