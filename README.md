@@ -53,4 +53,4 @@ kubectl apply -f deployment.yaml
 ## Contributing
 
 For a guide on how to contribute to this project, read the
-[Contributing Guide](./docs/CONTRIBUTING.md)
+[Contributing Guide](./docs/CONTRIBUTING.md).
