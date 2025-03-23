@@ -1,0 +1,24 @@
+name: Run Tests
+run-name: Run Tests
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Install Dependencies
+      - run: cd shared && bun install
+      - run: cd client && bun install
+      - run: cd fuzzing && bun install
+
+      # Run Compose
+      - run: docker compose up -d --build
+      
+      # Run Tests
+      - run: MDB_ENDPOINT='http://localhost:3005/api/v0' bun test
