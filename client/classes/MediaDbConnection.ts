@@ -131,4 +131,25 @@ export class MediaDbConnection {
     });
     return (await res.json()).new_id;
   }
+
+  async deleteMovie(id: string): Promise<boolean> {
+    const res = await fetch(`${this.endpoint}/movies/${id}`, {
+      method: 'DELETE'
+    });
+    return (await res.json()).is_successful;
+  }
+
+  async deleteMovieCollection(id: string): Promise<boolean> {
+    const res = await fetch(`${this.endpoint}/movie-collections/${id}`, {
+      method: 'DELETE'
+    });
+    return (await res.json()).is_successful;
+  }
+
+  async deleteShow(id: string): Promise<boolean> {
+    const res = await fetch(`${this.endpoint}/shows/${id}`, {
+      method: 'DELETE'
+    });
+    return (await res.json()).is_successful;
+  }
 }

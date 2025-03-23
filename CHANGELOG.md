@@ -9,7 +9,9 @@ project adheres to
 
 ## Unreleased
 
-//
+### Added
+
+- Delete functionality for movies, shows and movie collections
 
 ## 0.1.0 - 2025-03-23
 

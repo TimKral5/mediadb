@@ -131,4 +131,20 @@ export default class MovieModel
       .updateOne({ _id }, { $set: movie.dump() }))
       .upsertedId ?? _id;
   }
+
+  async deleteMovie(id: string): Promise<boolean> {
+    const _id = new ObjectId(id);
+
+    return (await this.db
+      .collection(config.tables['Movie'])
+      .deleteOne({ _id })).deletedCount > 0;
+  }
+
+  async deleteMovieCollection(id: string): Promise<boolean> {
+    const _id = new ObjectId(id);
+
+    return (await this.db
+      .collection(config.tables['MovieCollection'])
+      .deleteOne({ _id })).deletedCount > 0;
+  }
 }

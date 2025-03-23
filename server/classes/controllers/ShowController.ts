@@ -39,6 +39,7 @@ export default class ShowController
     this.createCounter('search_shows', helptext);
     this.createCounter('create_show', helptext);
     this.createCounter('update_show', helptext);
+    this.createCounter('delete_show', helptext);
 
     Object.values(this.counters).forEach(
       counter => this.registry.registerMetric(counter));
@@ -141,10 +142,29 @@ export default class ShowController
     }
   }
 
+  private async deleteShow(req: Request, res: Response) {
+    this.logger.debug(`DELETE ${req.url}`);
+    this.counters['delete_show'].inc();
+
+    try {
+      const id = req.params['id'];
+      const isSuccessful = await this.model.deleteShow(id);
+      res.json({
+        is_successful: isSuccessful
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
   registerRoutes(baseRoute: string, app: Express) {
     app.get(`${baseRoute}/shows/:id`, this.getShow.bind(this));
     app.get(`${baseRoute}/shows`, this.searchShows.bind(this));
     app.post(`${baseRoute}/shows`, this.createShow.bind(this));
     app.put(`${baseRoute}/shows/:id`, this.updateShow.bind(this));
+    app.delete(`${baseRoute}/shows/:id`, this.deleteShow.bind(this));
   }
 }
