@@ -100,7 +100,6 @@ export class MediaDbConnection {
   }
   
   async createShow(data: Show): Promise<string> {
-    console.log(data.dump());
     const res = await fetch(`${this.endpoint}/shows`, {
       body: JSON.stringify(data.dump()),
       method: 'POST',
