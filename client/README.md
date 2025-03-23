@@ -1,15 +1,21 @@
-# mediadb-client
+# MediaDB Client Library
 
-To install dependencies:
+This is a client library for the **MediaDB Server**. It may be in
+projects that make use of the API.
+
+## Usage
+
+The project can be directly used by importing components from
+`index.ts`.
+
+## Bundling the Library
+
+Bundling the library may be required for usage in the browser. It can
+be done with following command:
 
 ```bash
-bun install
+bun build \
+  --target browser \
+  --outfile mediadb-client.js \
+  ./index.ts
 ```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.4. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

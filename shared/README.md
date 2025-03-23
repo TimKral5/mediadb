@@ -1,15 +1,10 @@
-# mediadb-shared
+# MediaDB Shared
 
-To install dependencies:
+This is a library that contains shared resources between the
+**MediaDB Server** and the **MediaDB Client Library**.
 
-```bash
-bun install
-```
+For more information about the setup of either of the mentioned
+projects, see:
 
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.4. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- [MediaDB Server README](../server/README.md)
+- [MediaDB Client README](../client/README.md)

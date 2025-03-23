@@ -1,2 +1,7 @@
-node_modules/
-/sample-data.ts
+
+# NodeJS
+/node_modules/
+
+# Outputs
+/mdb
+/mdb.exe

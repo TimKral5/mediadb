@@ -6,38 +6,46 @@ shows and books.
 ## Technologies
 
 The API itself is a basic TypeScript application that uses
-**ExpressJS** to serve the data.
+**ExpressJS** to serve the data and is built on **BunJS**.
 
 The data is hosted on a **MongoDB** instance, while logs and metrics
 are sent to a **Loki** and a **Prometheus** instance.
 
-## Reference
+## Running/Building the Project
 
-See following resources for additional information:
+### Working Locally
 
-- [Setup](./docs/setup.md)
-- [API Reference](./docs/api-reference.md)
+Read the following files for information on how to run the project
+locally:
 
-## API Structure
+- [MediaDB Server](./server/README.md)
+- [MediaDB Client](./client/README.md)
 
-This image shows the general structure of the application with its
-classes:
+### Building the Docker Image
 
-![mdb-classes.png](./docs/img/mdb-classes.png)
+With the following command, a Docker image can be built:
 
-> **Note:** The database structure is not yet implemented like this.
-> This is, however, the aim of this project.
+```bash
+docker build -t mdb .
+```
 
-## Database Structure
+### Running the Development Environment
 
-The following illustration shows the data structures from within the
-MongoDB database:
+Using the compose configuration, a full development environment can
+be spun up. For that, run following command:
 
-![mdb-database_structure.png](./docs/img/mdb-database_structure.png)
+```bash
+docker-compose up -d --build
+```
 
-> **Note:** The database structure is not yet implemented like this.
-> This is, however, the aim of this project.
+### Deploying on Kubernetes
 
-## System Design
+The repository contains a `deployment.yaml`, that contains a complete
+manifest for deployment on Kubernetes.
 
-![mdb-system_designs.png](./docs/img/mdb-system_designs.png)
+With the folling command, the configuration can be applied on a
+running cluster:
+
+```bash
+kubectl apply -f deployment.yaml
+```
