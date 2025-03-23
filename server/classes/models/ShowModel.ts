@@ -42,15 +42,23 @@ export default class ShowModel
     return arr;
   }
 
-  async createShow(data: Partial<Show>): Promise<string> {
+  async createShow(data: Partial<Show>): Promise<ObjectId> {
     const show = new Show(data);
 
-    const obj: { [key: string]: any } = { ...show };
-    obj.id = undefined;
-    obj._id = undefined;
-
+    const obj = show.dump();
     return (await this.db
       .collection(config.tables['Show'])
-      .insertOne(obj)).insertedId.toString();
+      .insertOne(obj)).insertedId;
+  }
+
+  async updateShow(id: string, data: Partial<Show>): Promise<ObjectId> {
+    const _id = new ObjectId(id);
+    const show = new Show(data);
+
+    const obj = show.dump();
+    return (await this.db
+      .collection(config.tables['Show'])
+      .updateOne({ _id }, { $set: obj }))
+      .upsertedId ?? _id;
   }
 }

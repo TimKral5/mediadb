@@ -110,4 +110,26 @@ export class MediaDbConnection {
     });
     return (await res.json()).new_id;
   }
+
+  async updateMovie(data: Movie): Promise<string> {
+    const res = await fetch(`${this.endpoint}/movies/${data.id}`, {
+      body: JSON.stringify(data.dump()),
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return (await res.json()).new_id;
+  }
+
+  async updateShow(data: Show): Promise<string> {
+    const res = await fetch(`${this.endpoint}/shows/${data.id}`, {
+      body: JSON.stringify(data.dump()),
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return (await res.json()).new_id;
+  }
 }

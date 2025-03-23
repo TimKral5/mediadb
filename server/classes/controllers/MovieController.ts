@@ -37,10 +37,12 @@ export default class MovieController
     const helptext = 'Amount of calls to Endpoint';
 
     this.createCounter('get_movie', helptext);
-    this.createCounter('get_movie_collection', helptext);
     this.createCounter('search_movies', helptext);
-    this.createCounter('search_movie_collections', helptext);
     this.createCounter('create_movie', helptext);
+    this.createCounter('update_movie', helptext);
+
+    this.createCounter('get_movie_collection', helptext);
+    this.createCounter('search_movie_collections', helptext);
     this.createCounter('create_movie_collection', helptext);
 
     Object.values(this.counters).forEach(
@@ -63,6 +65,7 @@ export default class MovieController
   private async getMovie(req: Request, res: Response) {
     this.logger.debug(`GET ${req.url}`);
     this.counters['get_movie'].inc();
+
     const id = <string>req.params['id'];
 
     try {
@@ -79,6 +82,7 @@ export default class MovieController
   private async searchMovies(req: Request, res: Response) {
     this.logger.debug(`GET ${req.url}`);
     this.counters['search_movies'].inc();
+
     const query = <string>req.query['q'];
 
     try {
@@ -95,6 +99,7 @@ export default class MovieController
   private async getCollection(req: Request, res: Response) {
     this.logger.debug(`GET ${req.url}`);
     this.counters['get_movie_collection'].inc();
+
     const id = <string>req.params['id'];
 
     try {
@@ -111,6 +116,7 @@ export default class MovieController
   private async searchCollections(req: Request, res: Response) {
     this.logger.debug(`GET ${req.url}`);
     this.counters['search_movie_collections'].inc();
+
     const query = <string>req.query['q'];
 
     try {
@@ -127,6 +133,7 @@ export default class MovieController
   private async createMovie(req: Request, res: Response) {
     this.logger.debug(`POST ${req.url}`);
     this.counters['create_movie'].inc();
+
     try {
       let data = {};
       try {
@@ -153,6 +160,7 @@ export default class MovieController
   private async createMovieCollection(req: Request, res: Response) {
     this.logger.debug(`POST ${req.url}`);
     this.counters['create_movie_collection'].inc();
+
     try {
       let data = {};
       try {
@@ -176,10 +184,39 @@ export default class MovieController
     }
   }
 
+  private async updateMovie(req: Request, res: Response) {
+    this.logger.debug(`PUT ${req.url}`);
+    this.counters['update_movie'].inc();
+
+    try {
+      const id = req.params['id'];
+      let data = {};
+      try {
+        data = req.body;
+      }
+      catch (_err) {
+        const err = <Error>_err;
+        res.status(400).json({});
+        this.logger.error(err.toString());
+        return;
+      }
+      const _id = await this.model.updateMovie(id, data);
+      res.json({
+        new_id: _id.toString()
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
   registerRoutes(baseRoute: string, app: Express) {
     app.get(`${baseRoute}/movies/:id`, this.getMovie.bind(this));
     app.get(`${baseRoute}/movies`, this.searchMovies.bind(this));
     app.post(`${baseRoute}/movies`, this.createMovie.bind(this));
+    app.put(`${baseRoute}/movies/:id`, this.updateMovie.bind(this));
     
     app.get(`${baseRoute}/movie-collections/:id`, this.getCollection.bind(this));
     app.get(`${baseRoute}/movie-collections`, this.searchCollections.bind(this));

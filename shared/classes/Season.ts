@@ -15,8 +15,8 @@ export class Season extends Media {
     this.episodes = episodes.map(episode => new Episode(episode));
   }
 
-  dump() {
-    const obj = super.dump();
+  dump(keepId = false) {
+    const obj = super.dump(keepId);
     obj.epidodes = this.episodes.map(episode => episode.dump());
     return obj;
   }

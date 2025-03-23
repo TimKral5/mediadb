@@ -1,30 +1,28 @@
 
 import {
   MediaDbConnection,
-  Show,
-  Season
+  Movie
 } from './index.ts';
 
 const conn = new MediaDbConnection('http://localhost:3005/api/v0');
 
-const id = await conn.createShow(new Show({
+const id = await conn.createMovie(new Movie({
   title: [
     {
       language: 'en',
       text: 'A New Show'
     }
   ],
-  seasons: [
-    new Season({
-      title: [
-        {
-          language: 'en',
-          text: 'Season 1'
-        }
-      ]
-    })
-  ]
 }));
 
-const show = await conn.getShow(id);
-console.log(show);
+const movie = await conn.getMovie(id);
+console.log(movie);
+movie.title.push({
+  language: 'de',
+  text: 'Eine Neue Serie'
+});
+
+conn.updateMovie(movie);
+
+const newMovie = await conn.getMovie(id);
+console.log(newMovie);

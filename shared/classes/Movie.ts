@@ -11,8 +11,8 @@ export class Movie extends Media {
     this.genres = data.genres ?? [];
   }
 
-  dump() {
-    const obj = super.dump();
+  dump(keepId = false) {
+    const obj = super.dump(keepId);
     return obj;
   }
 }

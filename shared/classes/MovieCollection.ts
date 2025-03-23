@@ -20,9 +20,9 @@ export class MovieCollection extends Media {
     this.movies = movies.map(movie => new Movie(movie));
   }
 
-  dump() {
-    const obj = super.dump();
-    obj.movies = this.movies.map(movie => movie.dump());
+  dump(keepId = false) {
+    const obj = super.dump(keepId);
+    obj.movies = this.movies.map(movie => movie.dump(true));
     return obj;
   }
 }

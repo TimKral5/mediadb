@@ -98,10 +98,7 @@ export default class MovieModel
   async createMovie(data: Partial<Movie>): Promise<ObjectId> {
     const movie = new Movie(data);
 
-    const obj: { [key: string]: any } = { ...movie };
-    obj.id = undefined;
-    obj._id = undefined;
-    
+    const obj = movie.dump();
     return (await this.db
       .collection(config.tables['Movie'])
       .insertOne(obj)).insertedId;
@@ -110,10 +107,7 @@ export default class MovieModel
   async createMovieCollection(data: Partial<MovieCollection>): Promise<ObjectId> {
     const coll = new MovieCollection(data);
 
-    const obj: { [key: string]: any } = { ...coll };
-    obj.id = undefined;
-    obj._id = undefined;
-
+    const obj = coll.dump();
     const promises: Promise<ObjectId>[] = [];
     for (let i = 0; i < coll.movies.length; i++) {
       const movie = coll.movies[i];
@@ -125,5 +119,16 @@ export default class MovieModel
     return (await this.db
       .collection(config.tables['MovieCollection'])
       .insertOne(obj)).insertedId;
+  }
+
+  async updateMovie(id: string, data: Partial<Movie>) {
+    const _id = new ObjectId(id);
+    const movie = new Movie(data);
+
+    console.log(movie.dump())
+
+    return (await this.db.collection(config.tables['Movie'])
+      .updateOne({ _id }, { $set: movie.dump() }))
+      .upsertedId ?? _id;
   }
 }

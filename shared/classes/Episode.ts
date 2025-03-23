@@ -9,7 +9,7 @@ export class Episode extends Media {
     super(data);
   }
 
-  dump() {
+  dump(keepId = false) {
     const obj = super.dump();
     return obj;
   }

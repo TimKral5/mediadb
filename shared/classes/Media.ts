@@ -24,10 +24,18 @@ export abstract class Media {
     this.sources = sources.map(source => new Source(source));
   }
 
-  dump() {
-    const obj: { [key: string]: any } = { ...this };
-    obj.id = undefined;
-    obj._id = undefined;
+  dump(keepId = false) {
+    const obj: { [key: string]: any } = {};
+    Object.entries(this).forEach(
+      el => {
+        const [key, value] = el;
+        if (key === 'id' || key === '_id') {
+          if (keepId)
+            obj['_id'] = value;
+          return;
+        }
+        obj[key] = value;
+      });
     return obj;
   }
 }

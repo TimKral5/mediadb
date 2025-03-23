@@ -38,6 +38,7 @@ export default class ShowController
     this.createCounter('get_show', helptext);
     this.createCounter('search_shows', helptext);
     this.createCounter('create_show', helptext);
+    this.createCounter('update_show', helptext);
 
     Object.values(this.counters).forEach(
       counter => this.registry.registerMetric(counter));
@@ -103,7 +104,34 @@ export default class ShowController
       }
       const id = await this.model.createShow(data);
       res.json({
-        new_id: id
+        new_id: id.toString()
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
+  private async updateShow(req: Request, res: Response) {
+    this.logger.debug(`PUT ${req.url}`);
+    this.counters['update_show'].inc();
+    try {
+      const id = req.params['id'];
+      let data = {};
+      try {
+        data = req.body;
+      }
+      catch (_err) {
+        const err = <Error>_err;
+        res.status(400).json({});
+        this.logger.error(err.toString());
+        return;
+      }
+      const _id = await this.model.updateShow(id, data);
+      res.json({
+        new_id: _id.toString()
       });
     }
     catch (_err) {
@@ -117,5 +145,6 @@ export default class ShowController
     app.get(`${baseRoute}/shows/:id`, this.getShow.bind(this));
     app.get(`${baseRoute}/shows`, this.searchShows.bind(this));
     app.post(`${baseRoute}/shows`, this.createShow.bind(this));
+    app.put(`${baseRoute}/shows/:id`, this.updateShow.bind(this));
   }
 }
