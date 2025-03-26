@@ -11,7 +11,8 @@ project adheres to
 
 ### Added
 
-- Delete functionality for movies, shows and movie collections
+- Version checking between client and server
+- Delete functionalities for movies, shows and movie collections
 
 ## 0.1.0 - 2025-03-23
 
