@@ -24,6 +24,10 @@ export abstract class Media {
     this.sources = sources.map(source => new Source(source));
   }
 
+  /**
+   * Dumps the properties of the object as a separate object
+   * @param keepId Boolean, whether to keep or remove the id field
+   */
   dump(keepId = false) {
     const obj: { [key: string]: any } = {};
     Object.entries(this).forEach(
