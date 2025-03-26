@@ -24,7 +24,8 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
-      "mediadb-client": [ "../client/index.ts" ]
+      "mediadb-client": [ "../client/index.ts" ],
+      "mediadb-shared": [ "../shared/index.ts" ]
     }
   }
 }
