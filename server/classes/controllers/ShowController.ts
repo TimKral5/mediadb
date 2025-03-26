@@ -24,7 +24,12 @@ export default class ShowController
   private model: ShowModel;
 
   private counters: { [key: string]: Counter };
-
+  
+  /**
+   * Adds a new counter to the counters object.
+   * @param name Name of the counter
+   * @param help The helptext that is displayed in the metrics route
+   */
   private createCounter(name: string, help: string) {
     this.counters[name] = new Counter({
       name: `mdb_${name}_calls`,
@@ -32,6 +37,9 @@ export default class ShowController
     });
   }
 
+  /**
+   * Creates and registers all counters used in the routes.
+   */
   private registerCounters() {
     const helptext = 'Amount of calls to Endpoint';
 

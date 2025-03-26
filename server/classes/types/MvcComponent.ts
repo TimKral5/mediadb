@@ -1,12 +1,11 @@
 
 import Logger from './Logger';
 import {
-  Registry,
-  Counter
+  Registry
 } from 'prom-client';
 import { Db } from 'mongodb';
 
-type MvcConstructor<T> =
+type MvcType<T> =
   new (logger: Logger, registry: Registry, db: Db) => T;
 
 export default abstract class MvcComponent {
@@ -16,7 +15,11 @@ export default abstract class MvcComponent {
     readonly db: Db,
   ) {}
 
-  initMvcComponent<T>(_class: MvcConstructor<T>) {
+  /**
+   * A utility function for the initialization of a MVC component
+   * @param _class The type that is initialized
+   */
+  initMvcComponent<T>(_class: MvcType<T>) {
     return new _class(
       this.logger,
       this.registry,

@@ -13,7 +13,10 @@ import type IModel from '../../interfaces/IModel';
 export default class MovieModel
   extends MvcComponent
   implements IModel {
-  
+ 
+  /**
+   * Sets up all the collections related to this model
+   */
   createCollections() {
     MongoUtils.initCollection(this.db, config.tables['Movie'], coll => {
       coll.createIndex({
@@ -30,6 +33,10 @@ export default class MovieModel
     });
   }
 
+  /**
+   * Fetches the details of a movie from it's ID
+   * @param id The id of the entry
+   */
   async getMovie(id: string): Promise<Movie | {}> {
     const collection = this.db.collection(config.tables['Movie']);
     const result = await collection
@@ -40,6 +47,11 @@ export default class MovieModel
     return {};
   }
 
+  /**
+   * Searches through all the movies with the given query and returns
+   * the results
+   * @param query The search query that is used in the search
+   */
   async searchMovies(query: string): Promise<Movie[]> {
     const collection = this.db.collection(config.tables['Movie']);
     const results = await collection
@@ -50,6 +62,10 @@ export default class MovieModel
     return arr;
   }
 
+  /**
+   * Fetches the details of a movie collection from it's ID
+   * @param id The id of the entry
+   */
   async getCollection(id: string) {
     const collection = this.db.collection(config.tables['MovieCollection']);
     const results = await collection
@@ -70,6 +86,11 @@ export default class MovieModel
     return {};
   }
 
+  /**
+   * Searches through all the movie collections with the given query
+   * and returns the results
+   * @param query The search query that is used in the search
+   */
   async searchCollections(query: string) {
     const collection = this.db.collection(config.tables['MovieCollection']);
     const results = await collection
@@ -95,6 +116,10 @@ export default class MovieModel
     return arr;
   }
 
+  /**
+   * Creates a new movie entry and returns the ID
+   * @param data The movie data that is inserted
+   */
   async createMovie(data: Partial<Movie>): Promise<ObjectId> {
     const movie = new Movie(data);
 
@@ -104,6 +129,10 @@ export default class MovieModel
       .insertOne(obj)).insertedId;
   }
 
+  /**
+   * Creates a new movie collection entry and returns the ID
+   * @param data The movie collection data that is inserted
+   */
   async createMovieCollection(data: Partial<MovieCollection>): Promise<ObjectId> {
     const coll = new MovieCollection(data);
 
@@ -121,6 +150,11 @@ export default class MovieModel
       .insertOne(obj)).insertedId;
   }
 
+  /**
+   * Updates the data for a movie from it's ID
+   * @param id The ID of the movie entry that is updated
+   * @param data The updated movie data
+   */
   async updateMovie(id: string, data: Partial<Movie>) {
     const _id = new ObjectId(id);
     const movie = new Movie(data);
@@ -130,6 +164,10 @@ export default class MovieModel
       .upsertedId ?? _id;
   }
 
+  /**
+   * Deletes a movie entry from it's ID
+   * @param id The ID of the movie entry that is deleted
+   */
   async deleteMovie(id: string): Promise<boolean> {
     const _id = new ObjectId(id);
 
@@ -138,6 +176,10 @@ export default class MovieModel
       .deleteOne({ _id })).deletedCount > 0;
   }
 
+  /**
+   * Deletes a movie collection entry from it's ID
+   * @param id The ID of the movie colletion entry that is deleted
+   */
   async deleteMovieCollection(id: string): Promise<boolean> {
     const _id = new ObjectId(id);
 

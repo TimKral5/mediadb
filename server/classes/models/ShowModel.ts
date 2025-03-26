@@ -12,7 +12,10 @@ import type IModel from '../../interfaces/IModel';
 export default class ShowModel
   extends MvcComponent
   implements IModel {
-  
+ 
+  /**
+   * Sets up all the collections related to this model
+   */ 
   createCollections() {
     MongoUtils.initCollection(this.db, 'mdb_shows', coll => {
       coll.createIndex({
@@ -22,6 +25,10 @@ export default class ShowModel
     });
   }
 
+  /**
+   * Fetches the details of a show from it's ID
+   * @param id The id of the entry
+   */
   async getShow(id: string): Promise<Show | {}> {
     const collection = this.db.collection(config.tables['Show']);
     const result = await collection
@@ -32,6 +39,11 @@ export default class ShowModel
     return {};
   }
 
+  /**
+   * Searches through all the show entries with the given query and
+   * returns the results
+   * @param query The search query that is used in the search
+   */
   async searchShows(query: string): Promise<Show[]> {
     const collection = this.db.collection(config.tables['Show']);
     const results = await collection
@@ -42,6 +54,10 @@ export default class ShowModel
     return arr;
   }
 
+  /**
+   * Creates a new show entry and returns the ID
+   * @param data The show data that is inserted
+   */
   async createShow(data: Partial<Show>): Promise<ObjectId> {
     const show = new Show(data);
 
@@ -51,6 +67,11 @@ export default class ShowModel
       .insertOne(obj)).insertedId;
   }
 
+  /**
+   * Updates the data for a show from it's ID
+   * @param id The ID of the show entry that is updated
+   * @param data The updated show data
+   */
   async updateShow(id: string, data: Partial<Show>): Promise<ObjectId> {
     const _id = new ObjectId(id);
     const show = new Show(data);
@@ -62,6 +83,10 @@ export default class ShowModel
       .upsertedId ?? _id;
   }
 
+  /**
+   * Deletes a show entry from it's ID
+   * @param id The ID of the show entry that is deleted
+   */
   async deleteShow(id: string): Promise<boolean> {
     const _id = new ObjectId(id);
 
