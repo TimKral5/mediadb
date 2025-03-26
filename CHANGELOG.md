@@ -9,6 +9,10 @@ project adheres to
 
 ## Unreleased
 
+//
+
+## 0.2.0 - 2025-03-26
+
 ### Added
 
 - Version checking between client and server
