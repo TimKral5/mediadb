@@ -34,6 +34,7 @@ export class SemVer {
   /**
    * Compares this version to the provided one and checks, if they
    * are compatible.
+   * @param version Reference version
    */
   compareTo(version: SemVer): SemVerCompatibility {
     if (this.major !== version.major)

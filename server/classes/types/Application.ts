@@ -21,6 +21,10 @@ export default abstract class Application {
     this.express.use(express.urlencoded({ extended: true }));
   }
 
+  /**
+   * A utility function for the initialization of a MVC component
+   * @param _class The type that is initialized
+   */
   public initMvcCompontent<T>(_class: MvcType<T>) {
     return new _class(
       this.logger,
@@ -29,6 +33,11 @@ export default abstract class Application {
     );
   }
 
+  /**
+   * Registers all routes of all provided controllers
+   * @param controllers An array of items with base route and
+   * controller
+   */
   public registerControllers(controllers: Array<[string, IController]>) {
     for (let i = 0; i < controllers.length; i++) {
       const [ baseRoute, controller ] = controllers[i];
@@ -36,6 +45,9 @@ export default abstract class Application {
     }
   }
 
+  /**
+   * Launches the webserver on a specified port
+   */
   public launch(port: number) {
     this.express.listen(port, () => {
       this.logger.log(`Listening on port ${port}...`);
