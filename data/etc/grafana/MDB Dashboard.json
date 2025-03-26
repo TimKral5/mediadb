@@ -306,6 +306,38 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
+          "expr": "increase(mdb_update_movie_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Update Movie",
+          "range": true,
+          "refId": "Update Movie",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "increase(mdb_delete_movie_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Delete Movie",
+          "range": true,
+          "refId": "Delete Movie",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
           "expr": "increase(mdb_create_movie_collection_calls[1m])",
           "fullMetaSearch": false,
           "hide": false,
@@ -322,6 +354,38 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
+          "expr": "increase(mdb_update_movie_collection_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Update Movie Collection",
+          "range": true,
+          "refId": "Update Movie Collection",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "increase(mdb_delete_movie_collection_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Delete Movie Collection",
+          "range": true,
+          "refId": "Delete Movie Collection",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
           "expr": "increase(mdb_create_show_calls[1m])",
           "fullMetaSearch": false,
           "hide": false,
@@ -329,6 +393,38 @@
           "legendFormat": "Create Show",
           "range": true,
           "refId": "Create Show",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "increase(mdb_update_show_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Update Show",
+          "range": true,
+          "refId": "Update Show",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "eegpelz7fmupsa"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "increase(mdb_delete_show_calls[1m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Delete Show",
+          "range": true,
+          "refId": "Delete Show",
           "useBackend": false
         }
       ],
@@ -432,13 +528,13 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "browser",
+  "timezone": "Europe/Zurich",
   "title": "MDB Dashboard",
   "uid": "fegphfidfqo74a",
-  "version": 18,
+  "version": 19,
   "weekStart": ""
 }

@@ -125,10 +125,24 @@ export default class MovieModel
     const _id = new ObjectId(id);
     const movie = new Movie(data);
 
-    console.log(movie.dump())
-
     return (await this.db.collection(config.tables['Movie'])
       .updateOne({ _id }, { $set: movie.dump() }))
       .upsertedId ?? _id;
+  }
+
+  async deleteMovie(id: string): Promise<boolean> {
+    const _id = new ObjectId(id);
+
+    return (await this.db
+      .collection(config.tables['Movie'])
+      .deleteOne({ _id })).deletedCount > 0;
+  }
+
+  async deleteMovieCollection(id: string): Promise<boolean> {
+    const _id = new ObjectId(id);
+
+    return (await this.db
+      .collection(config.tables['MovieCollection'])
+      .deleteOne({ _id })).deletedCount > 0;
   }
 }

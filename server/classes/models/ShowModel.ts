@@ -61,4 +61,12 @@ export default class ShowModel
       .updateOne({ _id }, { $set: obj }))
       .upsertedId ?? _id;
   }
+
+  async deleteShow(id: string): Promise<boolean> {
+    const _id = new ObjectId(id);
+
+    return (await this.db
+      .collection(config.tables['Show'])
+      .deleteOne({ _id })).deletedCount > 0;
+  }
 }

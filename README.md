@@ -13,7 +13,7 @@ are sent to a **Loki** and a **Prometheus** instance.
 
 ## Running/Building the Project
 
-### Working Locally
+### Locally
 
 Read the following files for information on how to run the project
 locally:
@@ -49,3 +49,8 @@ running cluster:
 ```bash
 kubectl apply -f deployment.yaml
 ```
+
+## Contributing
+
+For a guide on how to contribute to this project, read the
+[Contributing Guide](./docs/CONTRIBUTING.md).

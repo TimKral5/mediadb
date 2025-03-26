@@ -1,0 +1,23 @@
+name: Run Tests
+run-name: Run Tests
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Install Dependencies
+      - run: cd server && bun install
+      - run: cd shared && bun install
+      - run: cd client && bun install
+      
+      # Run Tests
+      - run: cd server && bun test
+      - run: cd shared && bun test
+      - run: cd client && bun test

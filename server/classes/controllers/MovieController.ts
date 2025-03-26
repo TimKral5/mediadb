@@ -40,10 +40,13 @@ export default class MovieController
     this.createCounter('search_movies', helptext);
     this.createCounter('create_movie', helptext);
     this.createCounter('update_movie', helptext);
+    this.createCounter('delete_movie', helptext);
 
     this.createCounter('get_movie_collection', helptext);
     this.createCounter('search_movie_collections', helptext);
     this.createCounter('create_movie_collection', helptext);
+    this.createCounter('update_movie_collection', helptext);
+    this.createCounter('delete_movie_collection', helptext);
 
     Object.values(this.counters).forEach(
       counter => this.registry.registerMetric(counter));
@@ -212,14 +215,67 @@ export default class MovieController
     }
   }
 
+  private async deleteMovie(req: Request, res: Response) {
+    this.logger.debug(`DELETE ${req.url}`);
+    this.counters['delete_movie'].inc();
+
+    try {
+      const id = req.params['id'];
+      const isSuccessful = await this.model.deleteMovie(id);
+      res.json({
+        is_successful: isSuccessful
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
+  private async deleteMovieCollection(req: Request, res: Response) {
+    this.logger.debug(`DELETE ${req.url}`);
+    this.counters['delete_movie_collection'].inc();
+
+    try {
+      const id = req.params['id'];
+      const isSuccessful = await this.model.deleteMovieCollection(id);
+      res.json({
+        is_successful: isSuccessful
+      });
+    }
+    catch (_err) {
+      const err = <Error>_err;
+      this.logger.error(err.toString());
+      res.status(500).end();
+    }
+  }
+
   registerRoutes(baseRoute: string, app: Express) {
     app.get(`${baseRoute}/movies/:id`, this.getMovie.bind(this));
     app.get(`${baseRoute}/movies`, this.searchMovies.bind(this));
     app.post(`${baseRoute}/movies`, this.createMovie.bind(this));
     app.put(`${baseRoute}/movies/:id`, this.updateMovie.bind(this));
+    app.delete(
+      `${baseRoute}/movies/:id`,
+      this.deleteMovie.bind(this)
+    );
     
-    app.get(`${baseRoute}/movie-collections/:id`, this.getCollection.bind(this));
-    app.get(`${baseRoute}/movie-collections`, this.searchCollections.bind(this));
-    app.post(`${baseRoute}/movie-collections`, this.createMovieCollection.bind(this));
+    app.get(
+      `${baseRoute}/movie-collections/:id`,
+      this.getCollection.bind(this)
+    );
+    app.get(
+      `${baseRoute}/movie-collections`,
+      this.searchCollections.bind(this)
+    );
+    app.post(
+      `${baseRoute}/movie-collections`,
+      this.createMovieCollection.bind(this)
+    );
+    app.delete(
+      `${baseRoute}/movie-collections/:id`,
+      this.deleteMovieCollection.bind(this)
+    );
   }
 }
