@@ -79,6 +79,11 @@ export default class MovieController
 
     const id = <string>req.params['id'];
 
+    if (id === '' || !id) {
+      res.status(400).end();
+      return;
+    }
+
     try {
       const data = await this.model.getMovie(id);
       res.json(data);
@@ -95,6 +100,11 @@ export default class MovieController
     this.counters['search_movies'].inc();
 
     const query = <string>req.query['q'];
+
+    if (!query) {
+      res.status(400).end();
+      return;
+    }
 
     try {
       const data = await this.model.searchMovies(query);
@@ -113,6 +123,11 @@ export default class MovieController
 
     const id = <string>req.params['id'];
 
+    if (id === '' || !id) {
+      res.status(400).end();
+      return;
+    }
+
     try {
       const data = await this.model.getCollection(id);
       res.json(data);
@@ -130,6 +145,11 @@ export default class MovieController
 
     const query = <string>req.query['q'];
 
+    if (!query) {
+      res.status(400).end();
+      return;
+    }
+
     try {
       const data = await this.model.searchCollections(query);
       res.json(data);
@@ -145,17 +165,14 @@ export default class MovieController
     this.logger.debug(`POST ${req.url}`);
     this.counters['create_movie'].inc();
 
+    const data = req.body;
+
+    if (!data) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      let data = {};
-      try {
-        data = req.body;
-      }
-      catch (_err) {
-        const err = <Error>_err;
-        res.status(400).json({});
-        this.logger.error(err.toString());
-        return;
-      }
       const id = await this.model.createMovie(data);
       res.json({
         new_id: id.toString()
@@ -172,17 +189,14 @@ export default class MovieController
     this.logger.debug(`POST ${req.url}`);
     this.counters['create_movie_collection'].inc();
 
+    const data = req.body;
+
+    if (!data) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      let data = {};
-      try {
-        data = req.body;
-      }
-      catch (_err) {
-        const err = <Error>_err;
-        res.status(400).json({});
-        this.logger.error(err.toString());
-        return;
-      }
       const id = await this.model.createMovieCollection(data);
       res.json({
         new_id: id.toString()
@@ -199,18 +213,15 @@ export default class MovieController
     this.logger.debug(`PUT ${req.url}`);
     this.counters['update_movie'].inc();
 
+    const id = req.params['id'];
+    const data = req.body;
+
+    if (id === '' || !id || !data) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      const id = req.params['id'];
-      let data = {};
-      try {
-        data = req.body;
-      }
-      catch (_err) {
-        const err = <Error>_err;
-        res.status(400).json({});
-        this.logger.error(err.toString());
-        return;
-      }
       const _id = await this.model.updateMovie(id, data);
       res.json({
         new_id: _id.toString()
@@ -227,8 +238,14 @@ export default class MovieController
     this.logger.debug(`DELETE ${req.url}`);
     this.counters['delete_movie'].inc();
 
+    const id = req.params['id'];
+
+    if (id === '' || !id) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      const id = req.params['id'];
       const isSuccessful = await this.model.deleteMovie(id);
       res.json({
         is_successful: isSuccessful
@@ -245,8 +262,14 @@ export default class MovieController
     this.logger.debug(`DELETE ${req.url}`);
     this.counters['delete_movie_collection'].inc();
 
+    const id = req.params['id'];
+
+    if (id === '' || !id) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      const id = req.params['id'];
       const isSuccessful = await this.model.deleteMovieCollection(id);
       res.json({
         is_successful: isSuccessful

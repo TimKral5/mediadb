@@ -69,8 +69,15 @@ export default class ShowController
   private async getShow(req: Request, res: Response) {
     this.logger.debug(`GET ${req.url}`);
     this.counters['get_show'].inc();
+
+    const id = <string|undefined>req.params['id'];
+    
+    if (id === '' || !id) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      const id = <string>req.params['id'];
       const data = await this.model.getShow(id);
       res.json(data);
     }
@@ -100,17 +107,14 @@ export default class ShowController
   private async createShow(req: Request, res: Response) {
     this.logger.debug(`POST ${req.url}`);
     this.counters['create_show'].inc();
+
+    const data = req.body;
+    if (!data) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      let data = {};
-      try {
-        data = req.body;
-      }
-      catch (_err) {
-        const err = <Error>_err;
-        res.status(400).json({});
-        this.logger.error(err.toString());
-        return;
-      }
       const id = await this.model.createShow(data);
       res.json({
         new_id: id.toString()
@@ -126,18 +130,16 @@ export default class ShowController
   private async updateShow(req: Request, res: Response) {
     this.logger.debug(`PUT ${req.url}`);
     this.counters['update_show'].inc();
+
+    const id = req.params['id'];
+    const data = req.body;
+
+    if (id === '' || !id || !data) {
+      res.status(400).end();
+      return;
+    }
+
     try {
-      const id = req.params['id'];
-      let data = {};
-      try {
-        data = req.body;
-      }
-      catch (_err) {
-        const err = <Error>_err;
-        res.status(400).json({});
-        this.logger.error(err.toString());
-        return;
-      }
       const _id = await this.model.updateShow(id, data);
       res.json({
         new_id: _id.toString()
@@ -153,9 +155,15 @@ export default class ShowController
   private async deleteShow(req: Request, res: Response) {
     this.logger.debug(`DELETE ${req.url}`);
     this.counters['delete_show'].inc();
+    
+    const id = req.params['id'];
+
+    if (id === '' || !id) {
+      res.status(400).end();
+      return;
+    }
 
     try {
-      const id = req.params['id'];
       const isSuccessful = await this.model.deleteShow(id);
       res.json({
         is_successful: isSuccessful
