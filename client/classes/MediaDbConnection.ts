@@ -1,15 +1,14 @@
 import {
   Movie,
   MovieCollection,
-  Show,
-  SemVer
+  Show
 } from 'mediadb-shared';
 
 import {
   URL
 } from 'url';
 
-import { MissingEndpointError } from './errors/MissingEndpointError';
+import { ErrorHandler } from './ErrorHandler';
 
 import { type SearchQuery } from './SearchQuery';
 
@@ -30,10 +29,9 @@ export class MediaDbConnection {
   async getMovie(id: string): Promise<Movie> {
     const res = await fetch(`${this.endpoint}/movies/${id}`);
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     const data = await res.json();
     return new Movie(data);
@@ -46,10 +44,9 @@ export class MediaDbConnection {
   async getMovieCollection(id: string): Promise<MovieCollection> {
     const res = await fetch(`${this.endpoint}/movie-collections/${id}`);
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     const data = await res.json();
     return new MovieCollection(data);
@@ -62,10 +59,9 @@ export class MediaDbConnection {
   async getShow(id: string): Promise<Show> {
     const res = await fetch(`${this.endpoint}/shows/${id}`, );
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     const data = await res.json();
     return new Show(data);
@@ -84,10 +80,9 @@ export class MediaDbConnection {
     
     const res = await fetch(url);
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     const data = <Partial<Movie>[]>(await res.json());
     return data.map(movie => new Movie(movie));
@@ -107,10 +102,9 @@ export class MediaDbConnection {
     
     const res = await fetch(url);
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     const data = <Partial<MovieCollection>[]>(await res.json());
     return data.map(movie => new MovieCollection(movie));
@@ -129,10 +123,9 @@ export class MediaDbConnection {
     
     const res = await fetch(url);
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     const data = <Partial<Show>[]>(await res.json());
     return data.map(movie => new Show(movie));
@@ -152,10 +145,9 @@ export class MediaDbConnection {
       }
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).new_id;
   }
@@ -174,10 +166,9 @@ export class MediaDbConnection {
       }
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).new_id;
   }
@@ -196,10 +187,9 @@ export class MediaDbConnection {
       }
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).new_id;
   }
@@ -217,10 +207,9 @@ export class MediaDbConnection {
       }
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).new_id;
   }
@@ -238,10 +227,9 @@ export class MediaDbConnection {
       }
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).new_id;
   }
@@ -255,10 +243,9 @@ export class MediaDbConnection {
       method: 'DELETE'
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).is_successful;
   }
@@ -272,10 +259,9 @@ export class MediaDbConnection {
       method: 'DELETE'
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).is_successful;
   }
@@ -289,10 +275,9 @@ export class MediaDbConnection {
       method: 'DELETE'
     });
 
-    if (res.status === 404) {
-      throw new MissingEndpointError(
-        res.headers.get('X-API-Version') ?? 'v0.0.0');
-    }
+    new ErrorHandler({
+      apiVersion: res.headers.get('X-API-Version') ?? undefined
+    }).handleStatus(res.status);
 
     return (await res.json()).is_successful;
   }

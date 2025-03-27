@@ -1,7 +1,8 @@
 import { test, expect } from 'bun:test';
 import {
   MediaDbConnection,
-  Movie
+  Movie,
+  ServerSideError
 } from 'mediadb-client';
 
 const endpoint = process.env['MDB_ENDPOINT'];
@@ -53,4 +54,9 @@ test('Update Movie', async () => {
 test('Delete Movie', async () => {
   const res = await conn.deleteMovie(movieId);
   expect(res).toBeTrue();
+});
+
+test('Malformated Delete', () => {
+  expect(async () => await conn.deleteMovie('d'))
+    .toThrowError(ServerSideError);
 });

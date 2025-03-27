@@ -6,6 +6,8 @@ export enum SemVerCompatibility {
 
 export class SemVer {
 
+  public static currentVersion = new SemVer('v0.3.0');
+
   public major: number;
   public minor: number;
   public patch: number;

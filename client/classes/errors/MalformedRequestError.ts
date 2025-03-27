@@ -1,4 +1,4 @@
-export class MissingEndpointError extends Error {
+export class MalformedRequestError extends Error {
   constructor(
     public cause: string
   ) {
