@@ -1,11 +1,12 @@
 package main
 
 import (
-	"log"
+	mediadb "mediadb/internals"
 	"net/http"
 )
 
 func main() {
+	log := mediadb.NewLogger()
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello World"))
@@ -13,9 +14,9 @@ func main() {
 
 	server := http.Server{
 		Addr: ":3000",
-		Handler: handler,
+		Handler: EnableLogging(log, handler),
 	}
 
-	log.Println("Listening on port 3000")
+	log.Info("Listening on port 3000...")
 	server.ListenAndServe()
 }
