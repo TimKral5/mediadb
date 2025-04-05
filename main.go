@@ -17,6 +17,7 @@ func main() {
 		Handler: EnableLogging(log, handler),
 	}
 
+
 	log.Info("Listening on port 3000...")
 	server.ListenAndServe()
 }

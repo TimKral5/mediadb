@@ -2,7 +2,6 @@ package mediadb
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -16,12 +15,12 @@ const (
 	errorLevel
 )
 
-var levelName = map[LogLevel]string{
-	debugLevel:   "debug",
-	logLevel:    "log",
-	infoLevel:    "info",
-	warningLevel: "warning",
-	errorLevel:   "error",
+var levelCode = map[LogLevel]string{
+	debugLevel:   "\033[34mDBG",
+	logLevel:     "\033[37mLOG",
+	infoLevel:    "\033[036mINF",
+	warningLevel: "\033[33mWRN",
+	errorLevel:   "\033[31mERR",
 }
 
 type Logger struct {
@@ -36,17 +35,17 @@ func NewLogger() Logger {
 }
 
 func (lvl LogLevel) String() string {
-	return levelName[lvl]
+	return levelCode[lvl]
 }
 
 func (logger *Logger) LogByLevel(level LogLevel, args ...any) {
 	ctime := time.Now().Format(time.DateTime)
-	prefix := strings.ToUpper(level.String())
 
-	fmt.Print(ctime, " | ", prefix, ": ")
+	fmt.Print(ctime, " | ", level.String(), ":\033[0m ")
 	fmt.Println(args...)
 }
 
+// If debug is enabled, a message will be logged.
 func (logger *Logger) Debug(args ...any) {
 	if !logger.EnableDebug {
 		return
@@ -61,4 +60,12 @@ func (logger *Logger) Log(args ...any) {
 
 func (logger *Logger) Info(args ...any) {
 	logger.LogByLevel(infoLevel, args...)
+}
+
+func (logger *Logger) Warn(args ...any) {
+	logger.LogByLevel(warningLevel, args...)
+}
+
+func (logger *Logger) Error(args ...any) {
+	logger.LogByLevel(errorLevel, args...)
 }

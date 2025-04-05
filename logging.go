@@ -16,13 +16,15 @@ func (w *wrappedWriter) WriteHeader(statusCode int) {
 	w.statusCode = statusCode
 }
 
+// A wrapper for an http handler that logs all requests made to the
+// input handler to a given logger.
 func EnableLogging(log mediadb.Logger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
 		wrapped := &wrappedWriter{
 			ResponseWriter: w,
-			statusCode: http.StatusOK,
+			statusCode:     http.StatusOK,
 		}
 
 		next.ServeHTTP(wrapped, r)
