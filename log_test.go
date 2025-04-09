@@ -1,4 +1,4 @@
-package internals
+package main
 
 import "testing"
 

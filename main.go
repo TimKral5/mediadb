@@ -1,13 +1,19 @@
 package main
 
 import (
-	"mediadb/internals"
+	_ "mediadb/internals"
 	"mediadb/routers"
 	"net/http"
 )
 
 func main() {
-	log := internals.NewLogger()
+	log := NewLogger()
+	auth := NewAuthenticator()
+
+	stack := CreateStack(
+		log.Middleware,
+		auth.Middleware,
+	)
 
 	helloRouter := routers.GetHelloRouter()
 
@@ -15,7 +21,7 @@ func main() {
 
 	server := http.Server{
 		Addr: ":3000",
-		Handler: EnableLogging(log, handler),
+		Handler: stack(handler),
 	}
 
 
