@@ -13,4 +13,4 @@ project adheres to
 
 - Implemented colorful logging
 - Implemented API key authentication from a hardcoded key
-
+- Created Dockerfile and compose manifest
