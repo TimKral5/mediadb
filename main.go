@@ -1,16 +1,17 @@
 package main
 
 import (
-	mediadb "mediadb/internals"
+	"mediadb/internals"
+	"mediadb/routers"
 	"net/http"
 )
 
 func main() {
-	log := mediadb.NewLogger()
+	log := internals.NewLogger()
 
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello World"))
-	})
+	helloRouter := routers.GetHelloRouter()
+
+	handler := helloRouter
 
 	server := http.Server{
 		Addr: ":3000",

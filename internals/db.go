@@ -1,4 +1,4 @@
-package mediadb
+package internals
 
 import (
 	"context"
