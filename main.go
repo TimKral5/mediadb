@@ -26,5 +26,8 @@ func main() {
 
 
 	log.Info("Listening on port 3000...")
-	server.ListenAndServe()
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Error(err)
+	}
 }
