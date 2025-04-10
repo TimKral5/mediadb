@@ -2,34 +2,27 @@ package internals
 
 import (
 	"context"
-	"log"
+	//"mediadb/middleware"
 
 	//"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-type Database struct {
+type MongoDB struct {
 	Client *mongo.Client
 }
 
-func Connect(uri string) *Database {
-	log.Println("Connecting to database...")
+func Connect(uri string) (MongoDB, error) {
+	db := MongoDB{}
 
 	opts := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(opts)
 
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	db := &Database{
-		Client: client,
-	}
-
-	return db
+	db.Client = client
+	return db, err
 }
 
-func (db *Database) Disconnect() {
+func (db *MongoDB) Disconnect() {
 	db.Client.Disconnect(context.TODO())
 }

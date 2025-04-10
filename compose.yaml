@@ -1,5 +1,49 @@
 services:
   mediadb:
+    image: mediadb
     build: .
     ports:
-      - 3000:3000
+      - "3005:3000"
+    networks:
+      - mediadb
+      - databases
+    environment:
+      NODE_ENV: development
+      MEDIADB_PORT: 3000
+      MEDIADB_MONGODB_URL: "mongodb://root:example@mongodb:27017"
+      MEDIADB_LOKI_URL: "http://loki:3100"
+  mongodb:
+    image: docker.io/mongodb/mongodb-community-server
+    networks:
+      - databases
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:            # <<< Remove in prod
+      - "3003:27017"  # <<<
+  prometheus:
+    image: docker.io/prom/prometheus
+    networks:
+      - databases
+#    volumes:
+#      - "./data/etc/prometheus/:/etc/prometheus"
+#    ports:            # <<< Remove in prod
+#      - "9090:9090"   # <<<
+  loki:
+    image: docker.io/grafana/loki
+    networks:
+      - databases
+#    volumes:
+#      - "./data/etc/loki/:/etc/loki"
+#    ports:            # <<< Remove in prod
+#      - "3100:3100"   # <<<
+  grafana:
+    image: docker.io/grafana/grafana-oss
+    networks:
+      - databases
+    ports:
+      - "3004:3000"
+
+networks:
+  mediadb:
+  databases:
