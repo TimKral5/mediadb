@@ -3,6 +3,7 @@ package db_test
 import (
 	"context"
 	"mediadb/db"
+	"mediadb/internals"
 	"testing"
 	"time"
 )
@@ -23,5 +24,17 @@ func TestNewMongoConnection(t *testing.T) {
 		t.Error(err)
 		return
 	}
+}
+
+func TestCreateMovie(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	conn, _ := db.NewMongoConnection("mongodb://root:root@127.0.0.1/", ctx)
+	_ = conn.Ping()
+
+	conn.CreateMovie(internals.Movie{
+		Title: "Test Movie",
+		Description: "Test Description",
+	})
 }
 
