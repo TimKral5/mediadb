@@ -1,0 +1,7 @@
+services:
+  mdb:
+    build: .
+    image: mdb
+    ports:
+      - 3000:3000
+
