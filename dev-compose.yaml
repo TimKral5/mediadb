@@ -4,12 +4,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
-  mediadb:
-    build:
-      context: .
-      args:
-        MEDIADB_DO_TESTS: "false"
-    image: mdb
     ports:
-      - 3000:3000
+      - 27017:27017
 

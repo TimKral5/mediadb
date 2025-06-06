@@ -26,12 +26,12 @@ var levelCode = map[LogLevel]string{
 }
 
 type Logger struct {
-	EnableDebug bool
+	DebugEnabled bool
 }
 
 func NewLogger() Logger {
 	logger := Logger{
-		EnableDebug: false,
+		DebugEnabled: false,
 	}
 	return logger
 }
@@ -49,7 +49,7 @@ func (logger *Logger) LogByLevel(level LogLevel, args ...any) {
 
 // If debug is enabled, a message will be logged.
 func (logger *Logger) Debug(args ...any) {
-	if !logger.EnableDebug {
+	if !logger.DebugEnabled {
 		return
 	}
 
