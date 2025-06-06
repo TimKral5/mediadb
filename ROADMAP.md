@@ -8,8 +8,7 @@ for all CRUD operations on movie data.
 Therefor, following features must be implemented:
 
 - [ ] A running HTTP server
-- [ ] A basic SQLite schema for movie metadata
-- [ ] A working setup process for the database
+- [ ] A working setup process for the MongoDB database
 - [ ] All CRUD operations on movie metadata
     - [ ] Create a movie
     - [ ] Get movie metadata
