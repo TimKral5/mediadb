@@ -3,7 +3,9 @@ package db
 import (
 	"context"
 	"mediadb/internals"
+	"structs"
 
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
@@ -31,10 +33,26 @@ func (self *MongoConnection) Ping() error {
 	return err
 }
 
-func (self *MongoConnection) CreateMovie(movie internals.Movie) any {
+func (self *MongoConnection) CreateMovie(movie internals.Movie) (bool, any) {
 	res, _ := self.client.
 		Database("mediadb").
 		Collection("mediadb_movies").
 		InsertOne(self.ctx, movie)
-	return res.InsertedID
+	return res.Acknowledged, res.InsertedID
 }
+
+func (self *MongoConnection) UpdateMovie(id any, movie internals.Movie) (bool, any) {
+	filter := bson.D{{"_id", id}}
+
+	res, err := self.client.
+		Database("mediadb").
+		Collection("mediadb_movies").
+		ReplaceOne(self.ctx, filter, movie)
+
+	if err != nil {
+		return false, err
+	}
+
+	return res.Acknowledged, res.UpsertedID
+}
+
