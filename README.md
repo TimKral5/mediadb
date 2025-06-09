@@ -14,6 +14,9 @@ docker compose -f dev-compose.yaml down
 # Run tests
 go test ./...
 
+# Run/rerun all tests
+go test -count=1 ./...
+
 # Build container
 docker build -t mediadb .
 ```
