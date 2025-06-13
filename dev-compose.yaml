@@ -1,13 +1,18 @@
 services:
   ldap:
-    image: osixia/openldap:1.5.0
-    container_name: openldap
+    image: bitnami/openldap
     environment:
       LDAP_ORGANISATION: ExampleOrg
       LDAP_DOMAIN: example.org
       LDAP_ADMIN_PASSWORD: admin
+      LDAP_CUSTOM_SCHEMA_DIR: /_data/schemas
+      LDAP_USERS: demo,user1
+      LDAP_PASSWORDS: demo,user1
+      LDAP_GROUP: test
+    volumes:
+      - './data/ldap-schemas:/_data/schemas'
     ports:
-      - "389:389"
+      - "389:1389"
 
   phpldapadmin:
     # Configuration:
@@ -15,12 +20,18 @@ services:
     # - Password: admin
     #
 
-    image: osixia/phpldapadmin:0.9.0
+    image: phpldapadmin/phpldapadmin:2.1.4
     container_name: phpldapadmin
     environment:
-      PHPLDAPADMIN_LDAP_HOSTS: ldap
+      LDAP_HOST: ldap
+      LDAP_PORT: '1389'
+      LDAP_BASE_DN: dc=example,dc=org
+      LDAP_USERNAME: cn=admin,dc=example,dc=org
+      LDAP_PASSWORD: admin
+      LDAP_LOGIN_ATTR: cn
+      LDAP_ALLOW_GUEST: 'TRUE'
     ports:
-      - "6443:443"
+      - "8084:8080"
     depends_on:
       - ldap
 

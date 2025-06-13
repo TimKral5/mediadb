@@ -6,24 +6,24 @@ import (
 )
 
 var ldapUrl = "ldap://localhost:389"
-var ldapBaseDN = "dc=example,dc=org"
-var ldapBindDN = "cn=admin,dc=example,dc=org"
-var ldapBindPw = "admin"
+
+var ldapConfig = auth.LDAPConfig{
+	BaseDN:  "dc=example,dc=org",
+	BindDN:  "cn=admin,dc=example,dc=org",
+	BindPw:  "admin",
+	GroupDN: "ou=groups,dc=example,dc=org",
+	UserDN:  "ou=users,dc=example,dc=org",
+}
 
 func TestValidateLogin(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(
-		ldapUrl,
-		ldapBaseDN,
-		ldapBindDN,
-		ldapBindPw,
-	)
+	conn, err := auth.NewLDAPConnection(ldapUrl, ldapConfig)
 
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	demoCreds := auth.Credentials {
+	demoCreds := auth.Credentials{
 		Username: "demo",
 		Password: "demo",
 	}
@@ -41,42 +41,41 @@ func TestValidateLogin(t *testing.T) {
 	}
 }
 
-func TestGetPermissions(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(
-		ldapUrl,
-		ldapBaseDN,
-		ldapBindDN,
-		ldapBindPw,
-	)
+func TestIsUserGroupMember(t *testing.T) {
+	conn, err := auth.NewLDAPConnection(ldapUrl, ldapConfig)
 
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	demoCreds := auth.Credentials {
-		Username: "demo",
-		Password: "demo",
-	}
-
-	res, err := conn.ValidateLogin(demoCreds)
+	isMember, err := conn.IsUserGroupMember("demo", "test")
+	t.Log(isMember)
 
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	count, err := conn.GetPermissions(demoCreds)
-	t.Log(count)
-
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	if !res {
-		t.Error("Validation failed")
+	if !isMember {
+		t.Error("User is not member of group")
 		return
 	}
 }
 
+func TestCreateGroup(t *testing.T) {
+	conn, err := auth.NewLDAPConnection(ldapUrl, ldapConfig)
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = conn.CreateGroup("mediadb_test_group")
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+}
