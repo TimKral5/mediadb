@@ -12,7 +12,7 @@ services:
       MEDIADB_BIND_PASSWORD: ${LDAP_ADMIN_PASSWORD}
       MEDIADB_GROUP_DN: ${MEDIADB_GROUP_DN}
       MEDIADB_USER_DN: ${MEDIADB_USER_DN}
-      MEDIADB_HTTP_ADDRESS: ':3000'
+      MEDIADB_HTTP_ADDRESS: '${MEDIADB_HTTP_ADDRESS}'
     depends_on:
       mongodb:
         condition: service_healthy
@@ -46,7 +46,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s # Give OpenLDAP time to start up
+      start_period: 30s
     volumes:
       - './data/ldap-schemas:/_data/schemas' # Bind RFC2307 schema
     ports:
