@@ -37,9 +37,8 @@ func TestCreateMovie(t *testing.T) {
 		Description: "Test Description",
 	})
 
-	if !succeeded {
+	if !succeeded || id == nil {
 		t.Errorf("Create operation failed")
-		t.Error(id)
 		return
 	}
 }
@@ -57,7 +56,6 @@ func TestUpdateMovie(t *testing.T) {
 
 	if !succeeded {
 		t.Errorf("Create operation failed")
-		t.Error(id)
 		return
 	}
 
@@ -69,6 +67,39 @@ func TestUpdateMovie(t *testing.T) {
 	if !succeeded {
 		t.Errorf("Update operation failed")
 		t.Error(id)
+		return
+	}
+}
+
+func TestGetMovie(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	conn, _ := db.NewMongoConnection("mongodb://root:root@127.0.0.1/", ctx)
+	_ = conn.Ping()
+
+	succeeded, id := conn.CreateMovie(internals.Movie{
+		Title: "Test Movie 2",
+		Description: "Test Description 2",
+	})
+
+	if !succeeded {
+		t.Errorf("Create operation failed")
+		return
+	}
+
+	movie, err := conn.GetMovie(id)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if movie == nil {
+		t.Errorf("Movie could not be fetched")
+		return
+	}
+
+	if movie.Title != "Test Movie 2" {
+		t.Errorf("Title does not match")
 		return
 	}
 }

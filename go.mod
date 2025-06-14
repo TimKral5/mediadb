@@ -2,12 +2,15 @@ module mediadb
 
 go 1.24.3
 
-require go.mongodb.org/mongo-driver/v2 v2.2.2
+require (
+	github.com/go-ldap/ldap/v3 v3.4.11
+	go.mongodb.org/mongo-driver v1.17.4
+	go.mongodb.org/mongo-driver/v2 v2.2.2
+)
 
 require (
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.8-0.20250403174932-29230038a667 // indirect
-	github.com/go-ldap/ldap/v3 v3.4.11 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect

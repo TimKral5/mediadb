@@ -41,7 +41,7 @@ func (self *MongoConnection) CreateMovie(movie internals.Movie) (bool, any) {
 }
 
 func (self *MongoConnection) UpdateMovie(id any, movie internals.Movie) (bool, any) {
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{bson.E{Key: "_id", Value: id}}
 
 	res, err := self.client.
 		Database("mediadb").
@@ -53,5 +53,27 @@ func (self *MongoConnection) UpdateMovie(id any, movie internals.Movie) (bool, a
 	}
 
 	return res.Acknowledged, res.UpsertedID
+}
+
+func (self *MongoConnection) GetMovie(id any) (*internals.Movie, error) {
+	filter := bson.D{bson.E{Key: "_id", Value: id}}
+	movie := &internals.Movie{}
+
+	res := self.client.
+		Database("mediadb").
+		Collection("mediadb_movies").
+		FindOne(self.ctx, filter)
+
+	if res == nil {
+		return nil, nil
+	}
+
+	err := res.Decode(movie)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return movie, nil
 }
 
