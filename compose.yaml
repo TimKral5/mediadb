@@ -1,15 +1,69 @@
 services:
-  mongodb:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
   mediadb:
     build:
       context: .
       args:
-        MEDIADB_DO_TESTS: "false"
+        BUILD_CONFIG: release
     image: mdb
+    environment:
+      MEDIADB_LDAP_ADDRESS: ${LDAP_URL}
+      MEDIADB_BASE_DN: ${MEDIADB_BASE_DN}
+      MEDIADB_BIND_DN: ${LDAP_ADMIN_DN}
+      MEDIADB_BIND_PASSWORD: ${LDAP_ADMIN_PASSWORD}
+      MEDIADB_GROUP_DN: ${MEDIADB_GROUP_DN}
+      MEDIADB_USER_DN: ${MEDIADB_USER_DN}
+      MEDIADB_HTTP_ADDRESS: ':3000'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      ldap:
+        condition: service_healthy
     ports:
       - 3000:3000
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ADMIN_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ADMIN_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+  ldap:
+    image: bitnami/openldap
+    environment:
+      LDAP_ORGANISATION: ${LDAP_ORG}
+      LDAP_DOMAIN: ${LDAP_DOMAIN}
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD}
+      LDAP_USERS: ${LDAP_USERS}
+      LDAP_PASSWORDS: ${LDAP_PASSWORDS}
+      LDAP_GROUP: ${LDAP_GROUP}
+      LDAP_CUSTOM_SCHEMA_DIR: /_data/schemas
+    healthcheck:
+      test: ["CMD", "ldapsearch", "-x", "-H", "ldap://localhost:1389", "-s", "base", "-b", "", "objectClass=*"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s # Give OpenLDAP time to start up
+    volumes:
+      - './data/ldap-schemas:/_data/schemas' # Bind RFC2307 schema
+    ports:
+      - "389:1389"
+
+  phpldapadmin:
+    image: phpldapadmin/phpldapadmin:2.1.4
+    environment:
+      LDAP_HOST: ${LDAP_HOST}
+      LDAP_PORT: ${LDAP_PORT}
+      LDAP_BASE_DN: ${MEDIADB_BASE_DN}
+      LDAP_USERNAME: ${LDAP_ADMIN_DN}
+      LDAP_PASSWORD: ${LDAP_ADMIN_PASSWORD}
+      LDAP_LOGIN_ATTR: cn
+      LDAP_ALLOW_GUEST: 'TRUE'
+    ports:
+      - "8084:8080"
+    depends_on:
+      - ldap
 
