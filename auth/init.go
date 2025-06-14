@@ -15,6 +15,7 @@ func NewLdapInitializer(log utils.Logger) *LDAPInitializer {
 }
 
 func (self *LDAPInitializer) createGroup(conn *LDAPConnection, group string) error {
+	self.log.Info("Checking group '", group, "'...")
 	exists, err := conn.GroupExists(group)
 
 	if err != nil {
@@ -22,14 +23,18 @@ func (self *LDAPInitializer) createGroup(conn *LDAPConnection, group string) err
 	}
 
 	if exists {
+		self.log.Info("... already exists, nothing to do.")
 		return nil
 	}
 
 	err = conn.CreateGroup(group)
 
 	if err != nil {
+		self.log.Error("... failed to create.")
 		return err
 	}
+
+	self.log.Info("... successfully created.")
 
 	return nil
 }
