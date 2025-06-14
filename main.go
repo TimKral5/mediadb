@@ -10,23 +10,32 @@ func main() {
 	ctx := http.NewServeMux()
 	log.Info("Launching MediaDB v0.1.0-alpha...")
 
-	stack := utils.CreateStack(
-		log.Middleware,
-	)
+	env := LoadEnvironment(log)
+	prog := NewProgram().
+		AttachLogger(log).
+		AttachEnvironment(env)
 
-	ctx.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		header := w.Header()
-		header.Add("Content-Type", "application/json")
+	log.Info("Connecting to LDAP...")
+	err := prog.ConnectToLdap()
 
-		w.WriteHeader(500)
-		w.Write([]byte("{\"hello\": \"world\"}"))
-	})
-
-	server := http.Server{
-		Addr: ":3000",
-		Handler: stack(ctx),
+	if err != nil {
+		log.Error(err)
+		return
+	} else {
+		log.Info("Connected to LDAP")
 	}
 
-	log.Info("Running HTTP server...")
-	server.ListenAndServe()
+	log.Info("Initializing LDAP session...")
+	err = prog.InitializeLdap()
+
+	if err != nil {
+		log.Error(err)
+		return
+	} else {
+		log.Info("Initialized LDAP session")
+	}
+
+	log.Info("Launching HTTP server...")
+	LaunchHttpServer(log, ctx)
 }
+

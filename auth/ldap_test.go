@@ -5,18 +5,17 @@ import (
 	"testing"
 )
 
-var ldapUrl = "ldap://localhost:389"
-
 var ldapConfig = auth.LDAPConfig{
-	BaseDN:  "dc=example,dc=org",
-	BindDN:  "cn=admin,dc=example,dc=org",
-	BindPw:  "admin",
-	GroupDN: "ou=groups,dc=example,dc=org",
-	UserDN:  "ou=users,dc=example,dc=org",
+	ServerURL: "ldap://localhost:389",
+	BaseDN:    "dc=example,dc=org",
+	BindDN:    "cn=admin,dc=example,dc=org",
+	BindPw:    "admin",
+	GroupDN:   "ou=groups,dc=example,dc=org",
+	UserDN:    "ou=users,dc=example,dc=org",
 }
 
 func TestValidateLogin(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(ldapUrl, ldapConfig)
+	conn, err := auth.NewLDAPConnection(&ldapConfig)
 
 	if err != nil {
 		t.Error(err)
@@ -42,7 +41,7 @@ func TestValidateLogin(t *testing.T) {
 }
 
 func TestIsUserGroupMember(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(ldapUrl, ldapConfig)
+	conn, err := auth.NewLDAPConnection(&ldapConfig)
 
 	if err != nil {
 		t.Error(err)
@@ -64,7 +63,7 @@ func TestIsUserGroupMember(t *testing.T) {
 }
 
 func TestCreateGroup(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(ldapUrl, ldapConfig)
+	conn, err := auth.NewLDAPConnection(&ldapConfig)
 
 	if err != nil {
 		t.Error(err)

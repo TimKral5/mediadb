@@ -2,26 +2,26 @@ package auth
 
 import (
 	"fmt"
-
 	"github.com/go-ldap/ldap/v3"
 	"slices"
 )
 
 type LDAPConfig struct {
-	BaseDN  string
-	BindDN  string
-	BindPw  string
-	GroupDN string
-	UserDN  string
+	ServerURL string
+	BaseDN    string
+	BindDN    string
+	BindPw    string
+	GroupDN   string
+	UserDN    string
 }
 
 type LDAPConnection struct {
 	conn   *ldap.Conn
-	config LDAPConfig
+	config *LDAPConfig
 }
 
-func NewLDAPConnection(url string, config LDAPConfig) (*LDAPConnection, error) {
-	conn, err := ldap.DialURL(url)
+func NewLDAPConnection(config *LDAPConfig) (*LDAPConnection, error) {
+	conn, err := ldap.DialURL(config.ServerURL)
 
 	if err != nil {
 		return nil, err
@@ -172,11 +172,11 @@ func (self *LDAPConnection) CreateGroup(group string) error {
 
 	if err != nil {
 		return err
-	}	
+	}
 
 	req := ldap.NewAddRequest(newDN, nil)
 	req.Attribute("objectClass", []string{"groupOfNames"})
-	req.Attribute("member", []string{ self.config.BindDN })
+	req.Attribute("member", []string{self.config.BindDN})
 
 	err = self.conn.Add(req)
 
@@ -186,4 +186,3 @@ func (self *LDAPConnection) CreateGroup(group string) error {
 
 	return nil
 }
-
