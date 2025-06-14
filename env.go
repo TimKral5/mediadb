@@ -2,7 +2,6 @@ package main
 
 import (
 	"mediadb/auth"
-	"mediadb/utils"
 	"os"
 )
 
@@ -11,66 +10,55 @@ type Environment struct {
 	HttpAddress string
 }
 
-func loadLdapConfig(log utils.Logger) *auth.LDAPConfig {
-	hasError := false
+type configError struct {
+	str string
+}
 
+func (self *configError) Error() string {
+	return self.str
+}
+
+func loadLdapConfig() (*auth.LDAPConfig, error) {
 	ldapAddress, isDefined := os.LookupEnv("MEDIADB_LDAP_ADDRESS")
 	if !isDefined {
-		log.Error(
-			"Environment variable undefined",
-			"(MEDIADB_BIND_ADDRESS)",
-		)
-
-		hasError = true
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_LDAP_ADDRESS)",
+		}
 	}
 
 	ldapBaseDN, isDefined := os.LookupEnv("MEDIADB_BASE_DN")
 	if !isDefined {
-		log.Error(
-			"Environment variable undefined",
-			"(MEDIADB_BASE_DN)",
-		)
-		hasError = true
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_BASE_DN)",
+		}
 	}
 
 	ldapBindDN, isDefined := os.LookupEnv("MEDIADB_BIND_DN")
 	if !isDefined {
-		log.Error(
-			"Environment variable undefined",
-			"(MEDIADB_BIND_DN)",
-		)
-		hasError = true
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_BIND_DN)",
+		}
 	}
 
 	ldapBindPassword, isDefined := os.LookupEnv("MEDIADB_BIND_PASSWORD")
 	if !isDefined {
-		log.Error(
-			"Environment variable undefined",
-			"(MEDIADB_BIND_PASSWORD)",
-		)
-		hasError = true
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_BIND_PASSWORD)",
+		}
 	}
 
 	ldapGroupDN, isDefined := os.LookupEnv("MEDIADB_GROUP_DN")
 	if !isDefined {
-		log.Error(
-			"Environment variable undefined",
-			"(MEDIADB_GROUP_DN)",
-		)
-		hasError = true
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_GROUP_DN)",
+		}
 	}
 
 	ldapUserDN, isDefined := os.LookupEnv("MEDIADB_USER_DN")
 	if !isDefined {
-		log.Error(
-			"Environment variable undefined",
-			"(MEDIADB_USER_DN)",
-		)
-		hasError = true
-	}
-
-	if hasError {
-		return nil
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_USER_DN)",
+		}
 	}
 
 	config := &auth.LDAPConfig{
@@ -82,22 +70,21 @@ func loadLdapConfig(log utils.Logger) *auth.LDAPConfig {
 		UserDN:    ldapGroupDN,
 	}
 
-	return config
+	return config, nil
 }
 
-func LoadEnvironment(log utils.Logger) *Environment {
-	config := loadLdapConfig(log)
+func LoadEnvironment() (*Environment, error) {
+	config, err := loadLdapConfig()
 
-	if config == nil {
-		return nil
+	if err != nil {
+		return nil, err
 	}
 
 	httpAddress, isDefined := os.LookupEnv("MEDIADB_HTTP_ADDRESS")
 	if !isDefined {
-		log.Error(
-			"Environment variable undefined",
-			"(MEDIADB_HTTP_ADDRESS)",
-		)
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_HTTP_ADDRESS)",
+		}
 	}
 
 	env := &Environment{
@@ -105,5 +92,5 @@ func LoadEnvironment(log utils.Logger) *Environment {
 		HttpAddress: httpAddress,
 	}
 
-	return env
+	return env, nil
 }
