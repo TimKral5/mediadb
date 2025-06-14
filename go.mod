@@ -4,7 +4,6 @@ go 1.24.3
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.11
-	go.mongodb.org/mongo-driver v1.17.4
 	go.mongodb.org/mongo-driver/v2 v2.2.2
 )
 
