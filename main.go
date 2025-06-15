@@ -3,12 +3,10 @@ package main
 import (
 	"mediadb/internals"
 	"mediadb/utils"
-	"net/http"
 )
 
 func main() {
 	log := utils.NewLogger()
-	ctx := http.NewServeMux()
 	log.Info("Launching MediaDB v0.1.0-alpha...")
 
 	env, err := internals.LoadEnvironment()
@@ -42,7 +40,17 @@ func main() {
 		log.Info("Initialized LDAP session")
 	}
 
+	log.Info("Connecting to MongoDB...")
+	err = prog.ConnectToMongo()
+
+	if err != nil {
+		log.Error(err)
+		return
+	} else {
+		log.Info("Connected to MongoDB")
+	}
+
 	log.Info("Launching HTTP server...")
-	internals.LaunchHttpServer(log, ctx)
+	prog.LaunchHttpServer()
 }
 

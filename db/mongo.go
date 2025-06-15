@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"mediadb/media"
+	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -11,8 +12,6 @@ import (
 
 type MongoConfig struct {
 	Addr string
-	Context context.Context
-	CancelContext context.CancelFunc
 }
 
 type MongoConnection struct {
@@ -32,29 +31,36 @@ func NewMongoConnection(conf *MongoConfig) (*MongoConnection, error) {
 }
 
 func (self *MongoConnection) Disconnect() {
-	self.Config.CancelContext()
 }
 
 func (self *MongoConnection) Ping() error {
-	err := self.client.Ping(self.Config.Context, nil)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err := self.client.Ping(ctx, nil)
 	return err
 }
 
 func (self *MongoConnection) CreateMovie(movie media.Movie) (bool, any) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	res, _ := self.client.
 		Database("mediadb").
 		Collection("mediadb_movies").
-		InsertOne(self.Config.Context, movie)
+		InsertOne(ctx, movie)
 	return res.Acknowledged, res.InsertedID
 }
 
 func (self *MongoConnection) UpdateMovie(id any, movie media.Movie) (bool, any) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	filter := bson.D{bson.E{Key: "_id", Value: id}}
 
 	res, err := self.client.
 		Database("mediadb").
 		Collection("mediadb_movies").
-		ReplaceOne(self.Config.Context, filter, movie)
+		ReplaceOne(ctx, filter, movie)
 
 	if err != nil {
 		return false, err
@@ -64,21 +70,22 @@ func (self *MongoConnection) UpdateMovie(id any, movie media.Movie) (bool, any) 
 }
 
 func (self *MongoConnection) GetMovie(id any) (*media.Movie, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	filter := bson.D{bson.E{Key: "_id", Value: id}}
 	movie := &media.Movie{}
 
 	res := self.client.
 		Database("mediadb").
 		Collection("mediadb_movies").
-		FindOne(self.Config.Context, filter)
-
-	if res == nil {
-		return nil, nil
+		FindOne(ctx, filter)
+	
+	if err := res.Err(); err != nil {
+		return nil, err
 	}
 
-	err := res.Decode(movie)
-
-	if err != nil {
+	if err := res.Decode(movie); err != nil {
 		return nil, err
 	}
 

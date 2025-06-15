@@ -1,25 +1,44 @@
 package internals
 
 import (
+	"mediadb/routers"
 	"mediadb/utils"
 	"net/http"
 )
 
-func LaunchHttpServer(log utils.Logger, ctx *http.ServeMux) {
+type HttpConfig struct {
+	Addr string
+}
+
+type HttpServer struct {
+	program *Program
+	config  *HttpConfig
+}
+
+func NewHttpServer(prog *Program, conf *HttpConfig) HttpServer {
+	server := HttpServer{
+		program: prog,
+		config:  conf,
+	}
+	return server
+}
+
+func (self *HttpServer) LaunchHttpServer() {
+	ctx := http.NewServeMux()
+
+	movieRouter := routers.MovieRouter{
+		BaseRoute: "/movies",
+		Mongo: self.program.mongoConn,
+		Log: self.program.log,
+	}
+
 	stack := utils.CreateStack(
-		log.Middleware,
+		self.program.log.Middleware,
+		movieRouter.Middleware,
 	)
 
-	ctx.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		header := w.Header()
-		header.Add("Content-Type", "application/json")
-
-		w.WriteHeader(500)
-		w.Write([]byte("{\"hello\": \"world\"}"))
-	})
-
 	server := http.Server{
-		Addr: ":3000",
+		Addr:    self.config.Addr,
 		Handler: stack(ctx),
 	}
 

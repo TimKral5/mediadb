@@ -2,13 +2,15 @@ package internals
 
 import (
 	"mediadb/auth"
+	"mediadb/db"
 	"mediadb/utils"
 )
 
 type Program struct {
-	ldapConn *auth.LDAPConnection
-	log utils.Logger
-	env *Environment
+	ldapConn  *auth.LDAPConnection
+	mongoConn *db.MongoConnection
+	log       utils.Logger
+	env       *Environment
 }
 
 func NewProgram() *Program {
@@ -32,9 +34,25 @@ func (self *Program) ConnectToLdap() error {
 	return err
 }
 
+func (self *Program) ConnectToMongo() error {
+	conn, err := db.NewMongoConnection(self.env.MongoConfig)
+	self.mongoConn = conn
+
+	if err != nil {
+		return err
+	}
+
+	err = conn.Ping()
+	return err
+}
+
 func (self *Program) InitializeLdap() error {
 	i := auth.NewLdapInitializer(self.log)
 	err := i.InitializeLdapGroups(self.ldapConn)
 	return err
 }
 
+func (self *Program) LaunchHttpServer() {
+	server := NewHttpServer(self, self.env.HttpConfig)
+	server.LaunchHttpServer()
+}
