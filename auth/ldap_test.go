@@ -2,20 +2,31 @@ package auth_test
 
 import (
 	"mediadb/auth"
+	"mediadb/internals"
 	"testing"
 )
 
-var ldapConfig = auth.LDAPConfig{
-	ServerURL: "ldap://localhost:389",
-	BaseDN:    "dc=example,dc=org",
-	BindDN:    "cn=admin,dc=example,dc=org",
-	BindPw:    "admin",
-	GroupDN:   "ou=groups,dc=example,dc=org",
-	UserDN:    "ou=users,dc=example,dc=org",
+var initialized = false
+var ldapConfig *auth.LDAPConfig
+
+func getConfig(t *testing.T) {
+	if initialized {
+		return
+	}
+
+	env, err := internals.LoadEnvironment()
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	ldapConfig = env.LdapConfig
 }
 
 func TestValidateLogin(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(&ldapConfig)
+	getConfig(t)
+	conn, err := auth.NewLDAPConnection(ldapConfig)
 
 	if err != nil {
 		t.Error(err)
@@ -41,7 +52,8 @@ func TestValidateLogin(t *testing.T) {
 }
 
 func TestIsUserGroupMember(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(&ldapConfig)
+	getConfig(t)
+	conn, err := auth.NewLDAPConnection(ldapConfig)
 
 	if err != nil {
 		t.Error(err)
@@ -49,7 +61,6 @@ func TestIsUserGroupMember(t *testing.T) {
 	}
 
 	isMember, err := conn.IsUserGroupMember("demo", "test")
-	t.Log(isMember)
 
 	if err != nil {
 		t.Error(err)
@@ -63,7 +74,8 @@ func TestIsUserGroupMember(t *testing.T) {
 }
 
 func TestCreateGroup(t *testing.T) {
-	conn, err := auth.NewLDAPConnection(&ldapConfig)
+	getConfig(t)
+	conn, err := auth.NewLDAPConnection(ldapConfig)
 
 	if err != nil {
 		t.Error(err)

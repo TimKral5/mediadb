@@ -1,6 +1,7 @@
 package main
 
 import (
+	"mediadb/internals"
 	"mediadb/utils"
 	"net/http"
 )
@@ -10,14 +11,14 @@ func main() {
 	ctx := http.NewServeMux()
 	log.Info("Launching MediaDB v0.1.0-alpha...")
 
-	env, err := LoadEnvironment()
+	env, err := internals.LoadEnvironment()
 
 	if err != nil {
 		log.Error(err)
 		return
 	}
 
-	prog := NewProgram().
+	prog := internals.NewProgram().
 		AttachLogger(log).
 		AttachEnvironment(env)
 
@@ -42,6 +43,6 @@ func main() {
 	}
 
 	log.Info("Launching HTTP server...")
-	LaunchHttpServer(log, ctx)
+	internals.LaunchHttpServer(log, ctx)
 }
 

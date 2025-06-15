@@ -1,12 +1,16 @@
-package main
+package internals
 
 import (
+	"context"
 	"mediadb/auth"
+	"mediadb/db"
 	"os"
+	"time"
 )
 
 type Environment struct {
 	LdapConfig  *auth.LDAPConfig
+	MongoConfig *db.MongoConfig
 	HttpAddress string
 }
 
@@ -66,15 +70,40 @@ func loadLdapConfig() (*auth.LDAPConfig, error) {
 		BaseDN:    ldapBaseDN,
 		BindDN:    ldapBindDN,
 		BindPw:    ldapBindPassword,
-		GroupDN:   ldapUserDN,
-		UserDN:    ldapGroupDN,
+		GroupDN:   ldapGroupDN,
+		UserDN:    ldapUserDN,
+	}
+
+	return config, nil
+}
+
+func loadMongoConfig() (*db.MongoConfig, error) {
+	mongoUrl, isDefined := os.LookupEnv("MEDIADB_MONGO_URL")
+	if !isDefined {
+		return nil, &configError{
+			"Environment variable undefined (MEDIADB_MONGO_URL)",
+		}
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	config := &db.MongoConfig{
+		Addr: mongoUrl,
+		Context: ctx,
+		CancelContext: cancel,
 	}
 
 	return config, nil
 }
 
 func LoadEnvironment() (*Environment, error) {
-	config, err := loadLdapConfig()
+	ldapConfig, err := loadLdapConfig()
+
+	if err != nil {
+		return nil, err
+	}
+
+	mongoConfig, err := loadMongoConfig()
 
 	if err != nil {
 		return nil, err
@@ -88,7 +117,8 @@ func LoadEnvironment() (*Environment, error) {
 	}
 
 	env := &Environment{
-		LdapConfig:  config,
+		LdapConfig:  ldapConfig,
+		MongoConfig:  mongoConfig,
 		HttpAddress: httpAddress,
 	}
 

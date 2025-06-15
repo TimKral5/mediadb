@@ -2,51 +2,59 @@ package db
 
 import (
 	"context"
-	"mediadb/internals"
+	"mediadb/media"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-type MongoConnection struct {
-	Addr   string
-	client *mongo.Client
-	ctx    context.Context
+type MongoConfig struct {
+	Addr string
+	Context context.Context
+	CancelContext context.CancelFunc
 }
 
-func NewMongoConnection(addr string, ctx context.Context) (*MongoConnection, error) {
-	client, err := mongo.Connect(options.Client().ApplyURI(addr))
+type MongoConnection struct {
+	Config *MongoConfig
+	client *mongo.Client
+}
+
+func NewMongoConnection(conf *MongoConfig) (*MongoConnection, error) {
+	client, err := mongo.Connect(options.Client().ApplyURI(conf.Addr))
 
 	conn := MongoConnection{
-		Addr:   addr,
+		Config: conf,
 		client: client,
-		ctx:    ctx,
 	}
 
 	return &conn, err
 }
 
+func (self *MongoConnection) Disconnect() {
+	self.Config.CancelContext()
+}
+
 func (self *MongoConnection) Ping() error {
-	err := self.client.Ping(self.ctx, nil)
+	err := self.client.Ping(self.Config.Context, nil)
 	return err
 }
 
-func (self *MongoConnection) CreateMovie(movie internals.Movie) (bool, any) {
+func (self *MongoConnection) CreateMovie(movie media.Movie) (bool, any) {
 	res, _ := self.client.
 		Database("mediadb").
 		Collection("mediadb_movies").
-		InsertOne(self.ctx, movie)
+		InsertOne(self.Config.Context, movie)
 	return res.Acknowledged, res.InsertedID
 }
 
-func (self *MongoConnection) UpdateMovie(id any, movie internals.Movie) (bool, any) {
+func (self *MongoConnection) UpdateMovie(id any, movie media.Movie) (bool, any) {
 	filter := bson.D{bson.E{Key: "_id", Value: id}}
 
 	res, err := self.client.
 		Database("mediadb").
 		Collection("mediadb_movies").
-		ReplaceOne(self.ctx, filter, movie)
+		ReplaceOne(self.Config.Context, filter, movie)
 
 	if err != nil {
 		return false, err
@@ -55,14 +63,14 @@ func (self *MongoConnection) UpdateMovie(id any, movie internals.Movie) (bool, a
 	return res.Acknowledged, res.UpsertedID
 }
 
-func (self *MongoConnection) GetMovie(id any) (*internals.Movie, error) {
+func (self *MongoConnection) GetMovie(id any) (*media.Movie, error) {
 	filter := bson.D{bson.E{Key: "_id", Value: id}}
-	movie := &internals.Movie{}
+	movie := &media.Movie{}
 
 	res := self.client.
 		Database("mediadb").
 		Collection("mediadb_movies").
-		FindOne(self.ctx, filter)
+		FindOne(self.Config.Context, filter)
 
 	if res == nil {
 		return nil, nil
@@ -76,4 +84,3 @@ func (self *MongoConnection) GetMovie(id any) (*internals.Movie, error) {
 
 	return movie, nil
 }
-

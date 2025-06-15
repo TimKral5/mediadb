@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        BUILD_CONFIG: release
+        BUILD_CONFIG: debug
     image: mdb
     environment:
       MEDIADB_LDAP_ADDRESS: ${LDAP_URL}
@@ -12,6 +12,7 @@ services:
       MEDIADB_BIND_PASSWORD: ${LDAP_ADMIN_PASSWORD}
       MEDIADB_GROUP_DN: ${MEDIADB_GROUP_DN}
       MEDIADB_USER_DN: ${MEDIADB_USER_DN}
+      MEDIADB_MONGO_URL: '${MEDIADB_MONGO_URL}'
       MEDIADB_HTTP_ADDRESS: '${MEDIADB_HTTP_ADDRESS}'
     depends_on:
       mongodb:

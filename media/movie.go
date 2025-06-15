@@ -1,4 +1,4 @@
-package internals
+package media
 
 type Movie struct {
 	Title string `bson:"title"`

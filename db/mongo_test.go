@@ -1,17 +1,34 @@
 package db_test
 
 import (
-	"context"
 	"mediadb/db"
 	"mediadb/internals"
+	"mediadb/media"
 	"testing"
-	"time"
 )
 
+
+var initialized = false
+var mongoConfig *db.MongoConfig
+
+func getConfig(t *testing.T) {
+	if initialized {
+		return
+	}
+
+	env, err := internals.LoadEnvironment()
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	mongoConfig = env.MongoConfig
+}
+
 func TestNewMongoConnection(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	conn, err := db.NewMongoConnection("mongodb://root:root@127.0.0.1/", ctx)
+	getConfig(t)
+	conn, err := db.NewMongoConnection(mongoConfig)
 
 	if err != nil {
 		t.Error(err)
@@ -24,15 +41,16 @@ func TestNewMongoConnection(t *testing.T) {
 		t.Error(err)
 		return
 	}
+
+	conn.Disconnect()
 }
 
 func TestCreateMovie(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	conn, _ := db.NewMongoConnection("mongodb://root:root@127.0.0.1/", ctx)
+	getConfig(t)
+	conn, _ := db.NewMongoConnection(mongoConfig)
 	_ = conn.Ping()
 
-	succeeded, id := conn.CreateMovie(internals.Movie{
+	succeeded, id := conn.CreateMovie(media.Movie{
 		Title: "Test Movie",
 		Description: "Test Description",
 	})
@@ -41,15 +59,16 @@ func TestCreateMovie(t *testing.T) {
 		t.Errorf("Create operation failed")
 		return
 	}
+
+	conn.Disconnect()
 }
 
 func TestUpdateMovie(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	conn, _ := db.NewMongoConnection("mongodb://root:root@127.0.0.1/", ctx)
+	getConfig(t)
+	conn, _ := db.NewMongoConnection(mongoConfig)
 	_ = conn.Ping()
 
-	succeeded, id := conn.CreateMovie(internals.Movie{
+	succeeded, id := conn.CreateMovie(media.Movie{
 		Title: "Test Movie 2",
 		Description: "Test Description 2",
 	})
@@ -59,7 +78,7 @@ func TestUpdateMovie(t *testing.T) {
 		return
 	}
 
-	succeeded, id = conn.UpdateMovie(id, internals.Movie{
+	succeeded, id = conn.UpdateMovie(id, media.Movie{
 		Title: "Updated Test Movie",
 		Description: "Updated Test Description",
 	})
@@ -69,15 +88,16 @@ func TestUpdateMovie(t *testing.T) {
 		t.Error(id)
 		return
 	}
+
+	conn.Disconnect()
 }
 
 func TestGetMovie(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	conn, _ := db.NewMongoConnection("mongodb://root:root@127.0.0.1/", ctx)
+	getConfig(t)
+	conn, err := db.NewMongoConnection(mongoConfig)
 	_ = conn.Ping()
 
-	succeeded, id := conn.CreateMovie(internals.Movie{
+	succeeded, id := conn.CreateMovie(media.Movie{
 		Title: "Test Movie 2",
 		Description: "Test Description 2",
 	})
@@ -102,5 +122,7 @@ func TestGetMovie(t *testing.T) {
 		t.Errorf("Title does not match")
 		return
 	}
+
+	conn.Disconnect()
 }
 
