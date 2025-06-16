@@ -47,13 +47,29 @@ func TestNewMongoConnection(t *testing.T) {
 
 func TestCreateMovie(t *testing.T) {
 	getConfig(t)
-	conn, _ := db.NewMongoConnection(mongoConfig)
-	_ = conn.Ping()
+	conn, err := db.NewMongoConnection(mongoConfig)
 
-	succeeded, id := conn.CreateMovie(media.Movie{
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = conn.Ping()
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	id, succeeded, err := conn.CreateMovie(media.Movie{
 		Title: "Test Movie",
 		Description: "Test Description",
 	})
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	if !succeeded || id == nil {
 		t.Errorf("Create operation failed")
@@ -65,16 +81,32 @@ func TestCreateMovie(t *testing.T) {
 
 func TestUpdateMovie(t *testing.T) {
 	getConfig(t)
-	conn, _ := db.NewMongoConnection(mongoConfig)
-	_ = conn.Ping()
+	conn, err := db.NewMongoConnection(mongoConfig)
 
-	succeeded, id := conn.CreateMovie(media.Movie{
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = conn.Ping()
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	id, succeeded, err := conn.CreateMovie(media.Movie{
 		Title: "Test Movie 2",
 		Description: "Test Description 2",
 	})
 
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	if !succeeded {
-		t.Errorf("Create operation failed")
+		t.Error("Create operation failed")
 		return
 	}
 
@@ -84,7 +116,7 @@ func TestUpdateMovie(t *testing.T) {
 	})
 
 	if !succeeded {
-		t.Errorf("Update operation failed")
+		t.Error("Update operation failed")
 		t.Error(id)
 		return
 	}
@@ -95,12 +127,28 @@ func TestUpdateMovie(t *testing.T) {
 func TestGetMovie(t *testing.T) {
 	getConfig(t)
 	conn, err := db.NewMongoConnection(mongoConfig)
-	_ = conn.Ping()
 
-	succeeded, id := conn.CreateMovie(media.Movie{
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = conn.Ping()
+	
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	id, succeeded, err := conn.CreateMovie(media.Movie{
 		Title: "Test Movie 2",
 		Description: "Test Description 2",
 	})
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	if !succeeded {
 		t.Errorf("Create operation failed")
