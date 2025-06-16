@@ -61,7 +61,7 @@ func TestCreateMovie(t *testing.T) {
 		return
 	}
 
-	id, succeeded, err := conn.CreateMovie(media.Movie{
+	succeeded, _, err := conn.CreateMovie(media.Movie{
 		Title: "Test Movie",
 		Description: "Test Description",
 	})
@@ -71,7 +71,7 @@ func TestCreateMovie(t *testing.T) {
 		return
 	}
 
-	if !succeeded || id == nil {
+	if !succeeded {
 		t.Errorf("Create operation failed")
 		return
 	}
@@ -95,9 +95,9 @@ func TestUpdateMovie(t *testing.T) {
 		return
 	}
 
-	id, succeeded, err := conn.CreateMovie(media.Movie{
-		Title: "Test Movie 2",
-		Description: "Test Description 2",
+	succeeded, id, err := conn.CreateMovie(media.Movie{
+		Title: "Test Movie",
+		Description: "Test Description",
 	})
 
 	if err != nil {
@@ -110,10 +110,15 @@ func TestUpdateMovie(t *testing.T) {
 		return
 	}
 
-	succeeded, id = conn.UpdateMovie(id, media.Movie{
+	succeeded, id, err = conn.UpdateMovie(id, media.Movie{
 		Title: "Updated Test Movie",
 		Description: "Updated Test Description",
 	})
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	if !succeeded {
 		t.Error("Update operation failed")
@@ -140,7 +145,7 @@ func TestGetMovie(t *testing.T) {
 		return
 	}
 
-	id, succeeded, err := conn.CreateMovie(media.Movie{
+	succeeded, id, err := conn.CreateMovie(media.Movie{
 		Title: "Test Movie 2",
 		Description: "Test Description 2",
 	})
@@ -155,6 +160,7 @@ func TestGetMovie(t *testing.T) {
 		return
 	}
 
+	t.Log(id)
 	movie, err := conn.GetMovie(id)
 	if err != nil {
 		t.Error(err)

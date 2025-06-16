@@ -3,6 +3,7 @@ package routers
 import (
 	"encoding/json"
 	"mediadb/db"
+	"mediadb/media"
 	"mediadb/utils"
 	"net/http"
 
@@ -16,7 +17,27 @@ type MovieRouter struct {
 }
 
 func (self *MovieRouter) createMovie(w http.ResponseWriter, r *http.Request) {
+	movie := media.Movie{}
 
+	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	succeeded, _, err := self.Mongo.CreateMovie(movie)
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !succeeded {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	w.Write([]byte("Hello"))
 }
 
 func (self *MovieRouter) getMovie(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +78,7 @@ func (self *MovieRouter) deleteMovie(w http.ResponseWriter, r *http.Request) {
 
 func (self *MovieRouter) Middleware(next http.Handler) http.Handler {
 	ctx := http.NewServeMux()
+	ctx.HandleFunc("POST " + self.BaseRoute, self.createMovie)
 	ctx.HandleFunc("GET " + self.BaseRoute, self.getMovie)
 	return ctx
 }

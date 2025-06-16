@@ -40,7 +40,7 @@ func (self *MongoConnection) Ping() error {
 	return err
 }
 
-func (self *MongoConnection) CreateMovie(movie media.Movie) (any, bool, error) {
+func (self *MongoConnection) CreateMovie(movie media.Movie) (bool, bson.ObjectID, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -50,13 +50,13 @@ func (self *MongoConnection) CreateMovie(movie media.Movie) (any, bool, error) {
 		InsertOne(ctx, movie)
 
 	if err != nil {
-		return nil, false, err
+		return false, bson.NewObjectID(), err
 	}
 
-	return res.InsertedID, res.Acknowledged, nil
+	return res.Acknowledged, res.InsertedID.(bson.ObjectID), nil
 }
 
-func (self *MongoConnection) UpdateMovie(id any, movie media.Movie) (bool, any) {
+func (self *MongoConnection) UpdateMovie(id bson.ObjectID, movie media.Movie) (bool, bson.ObjectID, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -68,13 +68,21 @@ func (self *MongoConnection) UpdateMovie(id any, movie media.Movie) (bool, any) 
 		ReplaceOne(ctx, filter, movie)
 
 	if err != nil {
-		return false, err
+		return false, bson.NewObjectID(), err
 	}
 
-	return res.Acknowledged, res.UpsertedID
+	if !res.Acknowledged {
+		return false, bson.NewObjectID(), nil
+	}
+
+	if res.UpsertedID == nil {
+		return true, id, nil
+	}
+
+	return true, res.UpsertedID.(bson.ObjectID), nil
 }
 
-func (self *MongoConnection) GetMovie(id any) (*media.Movie, error) {
+func (self *MongoConnection) GetMovie(id bson.ObjectID) (*media.Movie, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
