@@ -122,7 +122,6 @@ func TestUpdateMovie(t *testing.T) {
 
 	if !succeeded {
 		t.Error("Update operation failed")
-		t.Error(id)
 		return
 	}
 
@@ -160,7 +159,6 @@ func TestGetMovie(t *testing.T) {
 		return
 	}
 
-	t.Log(id)
 	movie, err := conn.GetMovie(id)
 	if err != nil {
 		t.Error(err)

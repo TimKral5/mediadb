@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        BUILD_CONFIG: debug
+        BUILD_CONFIG: release
     image: mdb
     environment:
       MEDIADB_LDAP_ADDRESS: ${LDAP_URL}

@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type MovieRouter struct {
@@ -57,6 +58,11 @@ func (self *MovieRouter) getMovie(w http.ResponseWriter, r *http.Request) {
 	}
 
 	movie, err := self.Mongo.GetMovie(id)
+
+	if err == mongo.ErrNoDocuments {
+		w.WriteHeader(204)
+		return
+	}
 
 	if err != nil {
 		self.Log.Error(err)
