@@ -68,11 +68,11 @@ func (self *MongoConnection) UpdateMovie(id bson.ObjectID, movie media.Movie) (b
 		ReplaceOne(ctx, filter, movie)
 
 	if err != nil {
-		return false, bson.NewObjectID(), err
+		return false, id, err
 	}
 
 	if !res.Acknowledged {
-		return false, bson.NewObjectID(), nil
+		return false, id, nil
 	}
 
 	if res.UpsertedID == nil {
@@ -103,4 +103,22 @@ func (self *MongoConnection) GetMovie(id bson.ObjectID) (*media.Movie, error) {
 	}
 
 	return movie, nil
+}
+
+func (self *MongoConnection) DeleteMovie(id bson.ObjectID) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.D{bson.E{Key: "_id", Value: id}}
+
+	res, err := self.client.
+		Database("mediadb").
+		Collection("mediadb_movies").
+		DeleteOne(ctx, filter)
+
+	if err != nil {
+		return false, err
+	}
+
+	return res.Acknowledged, nil
 }

@@ -169,7 +169,50 @@ func (self *MovieRouter) updateMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *MovieRouter) deleteMovie(w http.ResponseWriter, r *http.Request) {
+	status := r.Header.Get("X-JWT-Status")
+	username := r.Header.Get("X-JWT-Username")
+	idStr := r.PathValue("id")
 
+	if status != "valid" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	isMember, err := self.Ldap.IsUserGroupMember(username, "mediadb_delete_movie")
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !isMember {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	id, err := bson.ObjectIDFromHex(idStr)
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	succeeded, err := self.Mongo.DeleteMovie(id)
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !succeeded {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (self *MovieRouter) GetHandler() http.Handler {
@@ -177,5 +220,6 @@ func (self *MovieRouter) GetHandler() http.Handler {
 	ctx.HandleFunc("POST " + utils.ConcatUrls(self.BaseRoute, "/", true), self.createMovie)
 	ctx.HandleFunc("GET " + utils.ConcatUrls(self.BaseRoute, "/{id}", false), self.getMovie)
 	ctx.HandleFunc("PUT " + utils.ConcatUrls(self.BaseRoute, "/{id}", false), self.updateMovie)
+	ctx.HandleFunc("DELETE " + utils.ConcatUrls(self.BaseRoute, "/{id}", false), self.deleteMovie)
 	return ctx
 }
