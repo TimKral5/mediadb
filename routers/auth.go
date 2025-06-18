@@ -52,7 +52,7 @@ func (self *AuthRouter) generateToken(w http.ResponseWriter, r *http.Request) {
 
 func (self *AuthRouter) GetHandler() http.Handler {
 	ctx := http.NewServeMux()
-	ctx.HandleFunc("POST /", self.generateToken)
+	ctx.HandleFunc("POST /jwt", self.generateToken)
 	//ctx.HandleFunc("GET " + self.BaseRoute, )
 	return ctx
 }

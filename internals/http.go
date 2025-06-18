@@ -58,8 +58,8 @@ func (self *HttpServer) LaunchHttpServer() {
 		authMiddleware.Middleware,
 	)
 
-	ctx.Handle("/auth", authRouter.GetHandler())
-	ctx.Handle("/movies", movieRouter.GetHandler())
+	ctx.Handle("/auth/", http.StripPrefix("/auth", authRouter.GetHandler()))
+	ctx.Handle("/movies/", http.StripPrefix("/movies", movieRouter.GetHandler()))
 
 	server := http.Server{
 		Addr:    self.config.Addr,

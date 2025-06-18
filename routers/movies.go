@@ -66,6 +66,7 @@ func (self *MovieRouter) createMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *MovieRouter) getMovie(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("id")
 	status := r.Header.Get("X-JWT-Status")
 	username := r.Header.Get("X-JWT-Username")
 
@@ -87,14 +88,7 @@ func (self *MovieRouter) getMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := r.URL.Query()
-
-	if !query.Has("id") {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	id, err := bson.ObjectIDFromHex(query.Get("id"))
+	id, err := bson.ObjectIDFromHex(idStr)
 
 	if err != nil {
 		self.Log.Error(err)
@@ -120,7 +114,57 @@ func (self *MovieRouter) getMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *MovieRouter) updateMovie(w http.ResponseWriter, r *http.Request) {
+	status := r.Header.Get("X-JWT-Status")
+	username := r.Header.Get("X-JWT-Username")
+	idStr := r.PathValue("id")
 
+	if status != "valid" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	isMember, err := self.Ldap.IsUserGroupMember(username, "mediadb_update_movie")
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !isMember {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	movie := media.Movie{}
+
+	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	id, err := bson.ObjectIDFromHex(idStr)
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	succeeded, id, err := self.Mongo.UpdateMovie(id, movie)
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !succeeded {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (self *MovieRouter) deleteMovie(w http.ResponseWriter, r *http.Request) {
@@ -130,6 +174,7 @@ func (self *MovieRouter) deleteMovie(w http.ResponseWriter, r *http.Request) {
 func (self *MovieRouter) GetHandler() http.Handler {
 	ctx := http.NewServeMux()
 	ctx.HandleFunc("POST /", self.createMovie)
-	ctx.HandleFunc("GET /", self.getMovie)
+	ctx.HandleFunc("GET /{id}", self.getMovie)
+	ctx.HandleFunc("PUT /{id}", self.updateMovie)
 	return ctx
 }
