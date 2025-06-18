@@ -1,30 +1,22 @@
 # MediaDB Roadmap
 
-## v0.1.0 - Movies (CRUD, SQLite)
+## v0.1.0 - Movies (CRUD & LDAP)
 
-This milestone includes the usage of a SQLite database and support
-for all CRUD operations on movie data.
+### Main Topics
 
-Therefor, following features must be implemented:
+- [x] Connecting to MongoDB
+- [x] Connecting to OpenLDAP
+- [x] All CRUD operations on movie metadata
+    - [x] Create a movie
+    - [x] Get movie metadata
+    - [x] Update a movie
+    - [x] Delete a movie
+- [x] Permissions over LDAP using groups
 
-- [ ] A running HTTP server
-- [ ] A working setup process for the MongoDB database
-- [ ] All CRUD operations on movie metadata
-    - [ ] Create a movie
-    - [ ] Get movie metadata
-    - [ ] Update a movie
-    - [ ] Delete a movie
-- [ ] //
+### Code Quality
 
-## v0.2.0 - API Restrictions (LDAP)
-
-The access to certain operations should be restrictable. This
-milestone requires the implementation of an LDAP server to restrict
-API access.
-
-Hence, following features have to be implemented:
-
-- [ ] A working connection to a LDAP server
-- [ ] Permissions for all operations on the API
-- [ ] Apply permissions on all API endpoints
+- [ ] Make sure that all endpoints return proper statuses
+- [ ] Make sure that all endpoints return the right headers
+- [ ] Make sure that all MongoDB interactions have unit tests
+- [ ] Make sure that all LDAP interactions have unit tests
 
