@@ -7,3 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- CRUD operations for movies (Create, Read, Update, Delete)
+- Login validation using LDAP
+- Permission management using LDAP groups
+- Configuration from environment variables
+- Dockerfile and compose configuration for containerization
+
