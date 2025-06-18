@@ -13,6 +13,7 @@ import (
 )
 
 type MovieRouter struct {
+	BaseRoute string
 	SessionUUID string
 	Mongo *db.MongoConnection
 	Ldap *auth.LDAPConnection
@@ -173,8 +174,8 @@ func (self *MovieRouter) deleteMovie(w http.ResponseWriter, r *http.Request) {
 
 func (self *MovieRouter) GetHandler() http.Handler {
 	ctx := http.NewServeMux()
-	ctx.HandleFunc("POST /", self.createMovie)
-	ctx.HandleFunc("GET /{id}", self.getMovie)
-	ctx.HandleFunc("PUT /{id}", self.updateMovie)
+	ctx.HandleFunc("POST " + utils.ConcatUrls(self.BaseRoute, "/", true), self.createMovie)
+	ctx.HandleFunc("GET " + utils.ConcatUrls(self.BaseRoute, "/{id}", false), self.getMovie)
+	ctx.HandleFunc("PUT " + utils.ConcatUrls(self.BaseRoute, "/{id}", false), self.updateMovie)
 	return ctx
 }

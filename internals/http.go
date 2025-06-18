@@ -37,6 +37,7 @@ func (self *HttpServer) LaunchHttpServer() {
 	}
 
 	movieRouter := routers.MovieRouter{
+		BaseRoute: "/movies",
 		Mongo: self.program.mongoConn,
 		Log:   self.program.log,
 		Ldap:  self.program.ldapConn,
@@ -59,7 +60,7 @@ func (self *HttpServer) LaunchHttpServer() {
 	)
 
 	ctx.Handle("/auth/", http.StripPrefix("/auth", authRouter.GetHandler()))
-	ctx.Handle("/movies/", http.StripPrefix("/movies", movieRouter.GetHandler()))
+	ctx.Handle("/", movieRouter.GetHandler())
 
 	server := http.Server{
 		Addr:    self.config.Addr,
