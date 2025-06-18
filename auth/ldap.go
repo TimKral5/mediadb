@@ -2,8 +2,9 @@ package auth
 
 import (
 	"fmt"
-	"github.com/go-ldap/ldap/v3"
 	"slices"
+
+	"github.com/go-ldap/ldap/v3"
 )
 
 type LDAPConfig struct {

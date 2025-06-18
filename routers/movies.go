@@ -2,6 +2,7 @@ package routers
 
 import (
 	"encoding/json"
+	"mediadb/auth"
 	"mediadb/db"
 	"mediadb/media"
 	"mediadb/utils"
@@ -12,12 +13,34 @@ import (
 )
 
 type MovieRouter struct {
-	BaseRoute string
+	SessionUUID string
 	Mongo *db.MongoConnection
+	Ldap *auth.LDAPConnection
 	Log   utils.Logger
 }
 
 func (self *MovieRouter) createMovie(w http.ResponseWriter, r *http.Request) {
+	status := r.Header.Get("X-JWT-Status")
+	username := r.Header.Get("X-JWT-Username")
+
+	if status != "valid" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	isMember, err := self.Ldap.IsUserGroupMember(username, "mediadb_create_movie")
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !isMember {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
 	movie := media.Movie{}
 
 	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
@@ -25,7 +48,7 @@ func (self *MovieRouter) createMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	succeeded, _, err := self.Mongo.CreateMovie(movie)
+	succeeded, id, err := self.Mongo.CreateMovie(movie)
 
 	if err != nil {
 		self.Log.Error(err)
@@ -38,10 +61,32 @@ func (self *MovieRouter) createMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("Hello"))
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(id.Hex())
 }
 
 func (self *MovieRouter) getMovie(w http.ResponseWriter, r *http.Request) {
+	status := r.Header.Get("X-JWT-Status")
+	username := r.Header.Get("X-JWT-Username")
+
+	if status != "valid" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	isMember, err := self.Ldap.IsUserGroupMember(username, "mediadb_get_movie")
+
+	if err != nil {
+		self.Log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !isMember {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
 	query := r.URL.Query()
 
 	if !query.Has("id") {
@@ -82,9 +127,9 @@ func (self *MovieRouter) deleteMovie(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (self *MovieRouter) Middleware(next http.Handler) http.Handler {
+func (self *MovieRouter) GetHandler() http.Handler {
 	ctx := http.NewServeMux()
-	ctx.HandleFunc("POST " + self.BaseRoute, self.createMovie)
-	ctx.HandleFunc("GET " + self.BaseRoute, self.getMovie)
+	ctx.HandleFunc("POST /", self.createMovie)
+	ctx.HandleFunc("GET /", self.getMovie)
 	return ctx
 }
