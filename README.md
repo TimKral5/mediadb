@@ -2,36 +2,34 @@
 
 > **Under Construction**
 
-## Development
+MediaDB is a RestAPI that provides stored metadata for media such as
+movies, shows, books and audio.
 
-```bash
-# Running environment
-docker compose -f dev-compose.yaml up -d
+## Technologies
 
-# Stopping environment
-docker compose -f dev-compose.yaml down
+This project has been developed using following technologies:
 
-# Run tests
-go test ./...
+- [Go](https://go.dev/) and standard libraries
+- [MongoDB](https://www.mongodb.com/)
+- [Bitnami OpenLDAP](https://hub.docker.com/r/bitnami/openldap)
+- [Docker](https://www.docker.com/)
+- [RCF2307bis LDAP Schema](https://github.com/jtyr/rfc2307bis)
 
-# Run/rerun all tests
-go test -count=1 ./...
+## Launch the Project
 
-# Build container
-docker build -t mediadb .
-```
+Running MediaDB locally can be achieved using Docker. For that simply
+run `docker compose up --build -d`. This will build and launch the
+project in a container.
 
-## Build
+Alternatively, the project can be run outside of a container, which
+requires `docker compose up -d` to be run to launch all containers.
+Then, run `source env.sh` in order to setup the required environment
+variables. Now, to run the application itself, simply run `go run .`.
 
-```bash
-# Running environment
-docker compose -d --build
+## Testing
 
-# Stopping environment
-docker compose down
-```
+The unit tests can be run using `go test ./...`.
 
-## Sources
-
-- `rfc2307bis.schema`: [https://github.com/jtyr/rfc2307bis](https://github.com/jtyr/rfc2307bis)
+If the `BUILD_CONFIG` argument in the `compose.yaml` is set to
+`debug`, the tests are being run on each startup of the container.
 
