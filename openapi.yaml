@@ -1,0 +1,108 @@
+openapi: 3.0.4
+info:
+  title: MediaDB
+  description: TODO (description)
+  version: v0.1.0-alpha
+  contact:
+    name: Tim Kral
+    url: https://github.com/timkral5/mediadb
+    email: mail@timkral.com
+  license:
+    name: None
+    url: https://example.com
+tags:
+  - name: Authentication
+  - name: Movies
+paths:
+  /auth/jwt:
+    post:
+      operationId: GenerateToken
+      summary: Generates a JWT token from credentials
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        $ref: '#/components/requestBodies/Credentials'
+      responses:
+        200:
+          description: All OK
+  /movies:
+    post:
+      operationId: CreateMovie
+      summary: Gets a single movie from ID
+      tags:
+        - Movies
+      security:
+        - jwt: []
+      responses:
+        201:
+          description: Success
+  /movies/{id}:
+    get:
+      operationId: GetMovie
+      tags:
+        - Movies
+      security:
+        - jwt: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+    put:
+      operationId: UpdateMovie
+      summary: Updates a movie record
+      tags:
+        - Movies
+      security:
+        - jwt: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+    delete:
+      operationId: DeleteMovie
+      summary: Deletes a movie record
+      tags:
+        - Movies
+      security:
+        - jwt: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+security:
+  - jwt: []
+components:
+  securitySchemes:
+    jwt:
+      name: JWT
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  requestBodies:
+    Credentials:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string

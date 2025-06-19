@@ -1,0 +1,6 @@
+services:
+  openapi-gen:
+    image: openapitools/openapi-generator-cli
+    command: generate -i /local/openapi.yaml -g html -o /local/api-docs/html
+    volumes:
+      - $PWD:/local
