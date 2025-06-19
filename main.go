@@ -3,7 +3,11 @@ package main
 import (
 	"mediadb/internals"
 	"mediadb/utils"
+	_ "embed"
 )
+
+//go:embed api-docs/html/index.html
+var openapiDocumentation string
 
 func main() {
 	log := utils.NewLogger()
@@ -18,7 +22,8 @@ func main() {
 
 	prog := internals.NewProgram().
 		AttachLogger(log).
-		AttachEnvironment(env)
+		AttachEnvironment(env).
+		AttachDocumentation(openapiDocumentation)
 
 	log.Info("Connecting to LDAP...")
 	err = prog.ConnectToLdap()

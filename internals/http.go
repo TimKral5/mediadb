@@ -54,6 +54,11 @@ func (self *HttpServer) LaunchHttpServer() {
 		Log:         self.program.log,
 	}
 
+	docRouter := routers.DocumentationRouter{
+		BaseRoute: "",
+		Documentation: self.program.documentation,
+	}
+
 	stack := utils.CreateStack(
 		self.program.log.Middleware,
 		authMiddleware.Middleware,
@@ -61,6 +66,7 @@ func (self *HttpServer) LaunchHttpServer() {
 
 	ctx.Handle("/auth/", http.StripPrefix("/auth", authRouter.GetHandler()))
 	ctx.Handle("/", movieRouter.GetHandler())
+	ctx.Handle("/docs", docRouter.GetHandler())
 
 	server := http.Server{
 		Addr:    self.config.Addr,

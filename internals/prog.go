@@ -11,6 +11,7 @@ type Program struct {
 	mongoConn *db.MongoConnection
 	log       utils.Logger
 	env       *Environment
+	documentation string
 }
 
 func NewProgram() *Program {
@@ -25,6 +26,11 @@ func (self *Program) AttachLogger(log utils.Logger) *Program {
 
 func (self *Program) AttachEnvironment(env *Environment) *Program {
 	self.env = env
+	return self
+}
+
+func (self *Program) AttachDocumentation(doc string) *Program {
+	self.documentation = doc
 	return self
 }
 
