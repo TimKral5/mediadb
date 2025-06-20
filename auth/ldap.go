@@ -70,6 +70,7 @@ func (self *LDAPConnection) GetUserDN(username string) (string, error) {
 	return res.Entries[0].DN, nil
 }
 
+// Tries to login with the given credentials
 func (self *LDAPConnection) ValidateLogin(creds Credentials) (bool, error) {
 	userDN, err := self.GetUserDN(creds.Username)
 
@@ -117,6 +118,7 @@ func (self *LDAPConnection) GetGroupMembers(group string) ([]string, error) {
 	return members, nil
 }
 
+// Searches for user within the members of a group
 func (self *LDAPConnection) IsUserGroupMember(username string, group string) (bool, error) {
 	userDN, err := self.GetUserDN(username)
 

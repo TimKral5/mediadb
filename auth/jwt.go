@@ -41,6 +41,7 @@ func ParseJWT(secret string, jwtStr string) (bool, *JwtContext, error) {
 	return token.Valid, claims, nil
 }
 
+// Remove prefix "Bearer " and parse JWT
 func ParseJWTFromHeader(secret string, header string) (bool, *JwtContext, error) {
 	if !strings.Contains(header, "Bearer ") {
 		return false, nil, nil
