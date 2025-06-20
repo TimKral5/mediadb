@@ -16,7 +16,7 @@
 ### Code Quality
 
 - [ ] Make sure that all endpoints return proper statuses
-- [ ] Make sure that all endpoints return the right headers
+- [x] Make sure that all endpoints return the right headers
 - [ ] Make sure that all MongoDB interactions have unit tests
 - [ ] Make sure that all LDAP interactions have unit tests
 

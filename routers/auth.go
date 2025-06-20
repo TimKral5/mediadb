@@ -47,6 +47,7 @@ func (self *AuthRouter) generateToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "text/plain")
 	w.Write([]byte(token))
 }
 

@@ -62,6 +62,7 @@ func (self *MovieRouter) createMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(id.Hex())
 }
@@ -110,6 +111,7 @@ func (self *MovieRouter) getMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	json, _ := json.Marshal(movie)
 	w.Write(json)
 }
