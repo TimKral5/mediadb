@@ -3,6 +3,7 @@ package routers
 import (
 	"encoding/json"
 	"mediadb/auth"
+	"mediadb/media"
 	"mediadb/utils"
 	"net/http"
 )
@@ -47,8 +48,13 @@ func (self *AuthRouter) generateToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "text/plain")
-	w.Write([]byte(token))
+	tokenWrapper := media.Token{
+		Token: token,
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(tokenWrapper)
 }
 
 func (self *AuthRouter) GetHandler() http.Handler {
