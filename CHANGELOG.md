@@ -14,4 +14,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Permission management using LDAP groups
 - Configuration from environment variables
 - Dockerfile and compose configuration for containerization
+- OpenAPI documentation on `/docs`
 
